@@ -46,5 +46,6 @@ yarn-error.log*
 # Deployment (managed by Vercel)
 .vercel
 
-# Root-level lock files (app has its own)
-/package-lock.json
+# Next.js
+.next/
+next-env.d.ts
