@@ -8,7 +8,7 @@ import { formatDateTime, getStatusColor } from '@/lib/utils';
 import {
   ArrowLeft, Phone, Mail, MapPin, GraduationCap, Calendar,
   Clock, MessageSquare, User as UserIcon, Plus, CheckCircle2,
-  AlertCircle, Send
+  AlertCircle, Send, Download
 } from 'lucide-react';
 
 export default function LeadDetailPage() {
@@ -136,27 +136,73 @@ export default function LeadDetailPage() {
     );
   }
 
+  const exportLeadData = () => {
+    const csv = [
+      ['Lead Detail Report'],
+      [''],
+      ['Field', 'Value'],
+      ['Name', `${lead!.first_name} ${lead!.last_name}`],
+      ['Email', lead!.email],
+      ['Phone', lead!.phone || ''],
+      ['Education Level', lead!.education_level || ''],
+      ['Field of Interest', lead!.category_name || ''],
+      ['Program', lead!.program_title || ''],
+      ['City', lead!.current_city || ''],
+      ['State', lead!.state || ''],
+      ['Status', lead!.status],
+      ['Assigned To', lead!.assigned_to_name || 'Unassigned'],
+      ['Created', formatDateTime(lead!.created_at)],
+      ['Message', (lead!.message || '').replace(/"/g, '""')],
+      [''],
+      ['Follow-up History'],
+      ['Date', 'Status', 'Remarks', 'Next Follow-up', 'Updated By'],
+      ...followups.map(f => [
+        formatDateTime(f.created_at),
+        f.status,
+        (f.remarks || '').replace(/"/g, '""'),
+        f.next_followup_at ? formatDateTime(f.next_followup_at) : '',
+        f.user_name || '',
+      ])
+    ].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lead-${lead!.first_name}-${lead!.last_name}-${lead!.id}.csv`;
+    a.click();
+  };
+
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={() => router.push('/crm')}
-          className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            {lead.first_name} {lead.last_name}
-          </h1>
-          <div className="flex items-center gap-2 mt-1">
-            <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(lead.status)}`}>
-              {lead.status}
-            </span>
-            <span className="text-sm text-gray-500">Lead #{lead.id}</span>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.push('/crm')}
+            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {lead.first_name} {lead.last_name}
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(lead.status)}`}>
+                {lead.status}
+              </span>
+              <span className="text-sm text-gray-500">Lead #{lead.id}</span>
+            </div>
           </div>
         </div>
+        <button
+          onClick={exportLeadData}
+          className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Export Lead
+        </button>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">

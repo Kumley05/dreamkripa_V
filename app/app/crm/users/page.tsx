@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { User } from '@/types';
-import { UserPlus, Trash2, Edit2, X, Check, Phone, Mail, Shield, UserCircle, KeyRound } from 'lucide-react';
+import { UserPlus, Trash2, Edit2, X, Check, Phone, Mail, Shield, UserCircle, KeyRound, Download } from 'lucide-react';
 
 export default function UsersPage() {
   const { user } = useAuth();
@@ -137,6 +137,27 @@ export default function UsersPage() {
     }
   };
 
+  const exportUsers = () => {
+    const csv = [
+      ['Name', 'Email', 'Phone', 'Role', 'Status', 'Created Date'].join(','),
+      ...users.map(u => [
+        u.name,
+        u.email,
+        u.phone || '',
+        u.role,
+        u.is_active ? 'Active' : 'Inactive',
+        new Date(u.created_at).toLocaleString('en-IN'),
+      ].map(v => `"${v}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `users-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
+
   if (user?.role !== 'admin') {
     return (
       <div className="text-center py-20">
@@ -152,13 +173,22 @@ export default function UsersPage() {
           <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
           <p className="text-gray-600">Create and manage telecallers who dial leads</p>
         </div>
-        <button
-          onClick={() => { setShowForm(true); setEditingId(null); setForm({ name: '', email: '', password: '', phone: '', role: 'telecaller' }); }}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-        >
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Telecaller
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={exportUsers}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </button>
+          <button
+            onClick={() => { setShowForm(true); setEditingId(null); setForm({ name: '', email: '', password: '', phone: '', role: 'telecaller' }); }}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add Telecaller
+          </button>
+        </div>
       </div>
 
       {/* Create/Edit Form Modal */}
