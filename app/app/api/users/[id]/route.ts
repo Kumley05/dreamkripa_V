@@ -36,7 +36,7 @@ export async function PATCH(
     await query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, values);
 
     const users = await query(
-      'SELECT id, name, email, role, phone, is_active, created_at, updated_at FROM users WHERE id = ?',
+      'SELECT id, name, email, role, phone, profile_picture, is_active, created_at, updated_at FROM users WHERE id = ?',
       [id]
     ) as any[];
 

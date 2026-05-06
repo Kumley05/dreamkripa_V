@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { User } from '@/types';
 import { AuthContext } from '@/lib/auth-context';
 import {
-  LayoutDashboard, Users, LogOut, Menu, X, UserCircle
+  LayoutDashboard, Users, LogOut, Menu, X, UserCircle, Settings
 } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -92,12 +92,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems = [
     { href: '/crm', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/crm/users', label: 'Users', icon: Users },
+    { href: '/crm/profile', label: 'Profile Settings', icon: Settings },
   ];
 
-  // Only admin sees Users link
+  // Only admin sees Users link; everyone sees Dashboard + Profile
   const filteredNav = user.role === 'admin'
     ? navItems
-    : [navItems[0]];
+    : [navItems[0], navItems[2]];
 
   return (
     <AuthContext.Provider value={{ user, setUser, logout }}>
@@ -151,8 +152,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* User info at bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gray-50">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
-                <UserCircle className="h-5 w-5 text-blue-600" />
+              <div className="w-9 h-9 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center flex-shrink-0">
+                {user.profile_picture ? (
+                  <Image
+                    src={user.profile_picture}
+                    alt={user.name}
+                    width={36}
+                    height={36}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <UserCircle className="h-5 w-5 text-blue-600" />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">{user.name}</div>

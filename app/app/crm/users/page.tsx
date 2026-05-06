@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { User } from '@/types';
-import { UserPlus, Trash2, Edit2, X, Check, Phone, Mail, Shield, UserCircle, KeyRound, Download } from 'lucide-react';
+import { UserPlus, Trash2, Edit2, X, Check, Phone, Mail, Shield, UserCircle, KeyRound, Download, Camera } from 'lucide-react';
 
 export default function UsersPage() {
   const { user } = useAuth();
@@ -371,8 +371,10 @@ export default function UsersPage() {
                   <tr key={u.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${u.role === 'admin' ? 'bg-purple-100' : 'bg-blue-100'}`}>
-                          {u.role === 'admin' ? (
+                        <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 bg-blue-100">
+                          {u.profile_picture ? (
+                            <img src={u.profile_picture} alt={u.name} className="w-full h-full object-cover" />
+                          ) : u.role === 'admin' ? (
                             <Shield className="h-4 w-4 text-purple-600" />
                           ) : (
                             <UserCircle className="h-4 w-4 text-blue-600" />

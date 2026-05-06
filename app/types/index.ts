@@ -119,6 +119,7 @@ export interface User {
   email: string;
   role: 'admin' | 'telecaller';
   phone?: string;
+  profile_picture?: string;
   is_active: boolean;
   created_at: Date | string;
   updated_at: Date | string;

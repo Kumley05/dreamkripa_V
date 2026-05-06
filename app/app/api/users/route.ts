@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     }
 
     const users = await query(
-      'SELECT id, name, email, role, phone, is_active, created_at, updated_at FROM users ORDER BY created_at DESC'
+      'SELECT id, name, email, role, phone, profile_picture, is_active, created_at, updated_at FROM users ORDER BY created_at DESC'
     ) as any[];
 
     return NextResponse.json({ success: true, data: users });

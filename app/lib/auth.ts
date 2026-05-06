@@ -39,7 +39,7 @@ export function verifyToken(token: string): AuthUser | null {
 
 export async function getUserFromDb(userId: number): Promise<AuthUser | null> {
   const users = await query(
-    'SELECT id, name, email, role, phone FROM users WHERE id = ? AND is_active = TRUE',
+    'SELECT id, name, email, role, phone, profile_picture FROM users WHERE id = ? AND is_active = TRUE',
     [userId]
   ) as any[];
   return users.length > 0 ? users[0] : null;
