@@ -125,7 +125,7 @@ export default function AdminDashboard() {
     setAddLoading(true);
     setAddError('');
     try {
-      const response = await fetch('/api/leads?action=manual', {
+      const response = await fetch('/api/leads/manual', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
@@ -158,7 +158,7 @@ export default function AdminDashboard() {
     try {
       const formData = new FormData();
       formData.append('file', bulkFile);
-      const response = await fetch('/api/leads?action=bulk', {
+      const response = await fetch('/api/leads/bulk', {
         method: 'POST',
         headers: getAuthHeaders(),
         body: formData,
