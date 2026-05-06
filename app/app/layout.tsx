@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -7,7 +7,15 @@ const inter = Inter({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#A84296",
+};
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dreamkripa.com"),
   title: {
     default: "Dreamkripa - Your Gateway to Elite Colleges",
     template: "%s | Dreamkripa"
@@ -39,11 +47,18 @@ export const metadata: Metadata = {
     description: "Discover your dream higher education program in India. Get personalized guidance for your academic journey.",
     images: ["/og-image.jpg"],
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16x16.png", sizes: "16x16" },
+      { url: "/favicon-32x32.png", sizes: "32x32" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
   },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -53,15 +68,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IN" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" />
-        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#A84296" />
-      </head>
       <body className={`${inter.className} antialiased`}>
         {children}
         <script
@@ -72,7 +78,7 @@ export default function RootLayout({
               "@type": "EducationalOrganization",
               "name": "Dreamkripa",
               "description": "Your Gateway to Elite Colleges. Leading education consultancy helping students find their dream higher education programs in India",
-              "url": "https://ds521u300p80.drytis.ai",
+              "url": "https://dreamkripa.com",
               "address": {
                 "@type": "PostalAddress",
                 "addressCountry": "IN"

@@ -27,9 +27,9 @@ export default function AdminDashboard() {
     if (user?.role === 'admin') fetchTelecallers();
   }, [filterStatus]);
 
-  const getAuthHeaders = () => {
+  const getAuthHeaders = (): Record<string, string> => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    return token ? { Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' };
   };
 
   const fetchStats = async () => {
