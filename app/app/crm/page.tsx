@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
@@ -8,7 +8,8 @@ import { formatDateTime, getStatusColor } from '@/lib/utils';
 import { Lead, DashboardStats, User } from '@/types';
 import {
   Users, TrendingUp, Download, Search, Eye,
-  BarChart3, CheckCircle2, Clock, UserCheck, Phone
+  BarChart3, CheckCircle2, Clock, UserCheck, Phone,
+  UserPlus, Upload, X, FileText, AlertCircle, CheckCircle
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -20,6 +21,15 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [addForm, setAddForm] = useState({ first_name: '', last_name: '', email: '', phone: '', education_level: '', program_category_id: '', current_city: '', state: '', status: 'new', assigned_to_id: '', notes: '' });
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState('');
+  const [bulkFile, setBulkFile] = useState<File | null>(null);
+  const [bulkLoading, setBulkLoading] = useState(false);
+  const [bulkResult, setBulkResult] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchStats();
@@ -108,6 +118,72 @@ export default function AdminDashboard() {
     a.click();
   };
 
+  const handleAddLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddLoading(true);
+    setAddError('');
+    try {
+      const response = await fetch('/api/leads/manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        body: JSON.stringify({
+          ...addForm,
+          program_category_id: addForm.program_category_id ? parseInt(addForm.program_category_id) : null,
+          assigned_to_id: addForm.assigned_to_id ? parseInt(addForm.assigned_to_id) : null,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setShowAddModal(false);
+        setAddForm({ first_name: '', last_name: '', email: '', phone: '', education_level: '', program_category_id: '', current_city: '', state: '', status: 'new', assigned_to_id: '', notes: '' });
+        fetchLeads();
+        fetchStats();
+      } else {
+        setAddError(data.error || 'Failed to add lead');
+      }
+    } catch {
+      setAddError('Network error');
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
+  const handleBulkUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bulkFile) return;
+    setBulkLoading(true);
+    setBulkResult(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', bulkFile);
+      const response = await fetch('/api/leads/bulk', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: formData,
+      });
+      const data = await response.json();
+      setBulkResult(data);
+      if (data.success) {
+        fetchLeads();
+        fetchStats();
+      }
+    } catch {
+      setBulkResult({ success: false, error: 'Network error' });
+    } finally {
+      setBulkLoading(false);
+    }
+  };
+
+  const downloadSampleCSV = () => {
+    const csv = 'first_name,last_name,email,phone,education_level,current_city,state,status,notes\nJohn,Doe,john@example.com,9876543210,12th,Mumbai,Maharashtra,new,Interested in Engineering\nJane,Smith,jane@example.com,9876543211,Graduate,Delhi,Delhi,contacted,Looking for MBA';
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sample-leads-template.csv';
+    a.click();
+  };
+
   const filteredLeads = leads.filter(lead =>
     `${lead.first_name} ${lead.last_name} ${lead.email} ${lead.phone}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -137,13 +213,29 @@ export default function AdminDashboard() {
           )}
         </div>
         {user?.role === 'admin' && (
-          <button
-            onClick={exportLeads}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export CSV
-          </button>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => { setShowAddModal(true); setAddError(''); }}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Add Lead
+            </button>
+            <button
+              onClick={() => { setShowBulkModal(true); setBulkResult(null); setBulkFile(null); }}
+              className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Bulk Upload
+            </button>
+            <button
+              onClick={exportLeads}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export CSV
+            </button>
+          </div>
         )}
       </div>
 
@@ -383,6 +475,192 @@ export default function AdminDashboard() {
           </table>
         </div>
       </div>
+
+      {/* ===== ADD LEAD MODAL ===== */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-5 border-b">
+              <h2 className="text-lg font-semibold text-gray-900">Add New Lead</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={handleAddLead} className="p-5 space-y-4">
+              {addError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded-lg">{addError}</div>
+              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                  <input type="text" required value={addForm.first_name} onChange={(e) => setAddForm({ ...addForm, first_name: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                  <input type="text" required value={addForm.last_name} onChange={(e) => setAddForm({ ...addForm, last_name: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <input type="email" required value={addForm.email} onChange={(e) => setAddForm({ ...addForm, email: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input type="tel" value={addForm.phone} onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Education Level</label>
+                  <select value={addForm.education_level} onChange={(e) => setAddForm({ ...addForm, education_level: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm bg-white">
+                    <option value="">Select</option>
+                    <option value="10th">10th</option>
+                    <option value="12th">12th</option>
+                    <option value="Graduate">Graduate</option>
+                    <option value="Postgraduate">Postgraduate</option>
+                    <option value="Working Professional">Working Professional</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select value={addForm.status} onChange={(e) => setAddForm({ ...addForm, status: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm bg-white">
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="converted">Converted</option>
+                    <option value="lost">Lost</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <input type="text" value={addForm.current_city} onChange={(e) => setAddForm({ ...addForm, current_city: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                  <input type="text" value={addForm.state} onChange={(e) => setAddForm({ ...addForm, state: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Assign To</label>
+                <select value={addForm.assigned_to_id} onChange={(e) => setAddForm({ ...addForm, assigned_to_id: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm bg-white">
+                  <option value="">Leave Unassigned</option>
+                  {telecallers.map((tc) => (
+                    <option key={tc.id} value={tc.id}>{tc.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <textarea value={addForm.notes} onChange={(e) => setAddForm({ ...addForm, notes: e.target.value })} rows={2} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder="Any additional notes..." />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="submit" disabled={addLoading} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50">
+                  {addLoading ? 'Adding...' : 'Add Lead'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===== BULK UPLOAD MODAL ===== */}
+      {showBulkModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-5 border-b">
+              <h2 className="text-lg font-semibold text-gray-900">Bulk Upload Leads</h2>
+              <button onClick={() => setShowBulkModal(false)} className="text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="p-5">
+              {/* Sample CSV Download */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-5">
+                <div className="flex items-start gap-3">
+                  <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">Download Sample CSV</p>
+                    <p className="text-xs text-blue-700 mt-1">Use this template with the correct column headers</p>
+                    <button onClick={downloadSampleCSV} className="mt-2 text-xs font-medium text-blue-700 hover:text-blue-900 underline">
+                      Download sample-leads-template.csv
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-3 bg-white rounded p-2 text-[10px] font-mono text-gray-600 overflow-x-auto">
+                  first_name, last_name, email, phone, education_level, current_city, state, status, notes
+                </div>
+              </div>
+
+              {!bulkResult ? (
+                <form onSubmit={handleBulkUpload}>
+                  <div
+                    className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-orange-400 transition-colors cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                    onDrop={(e) => { e.preventDefault(); if (e.dataTransfer.files[0]) setBulkFile(e.dataTransfer.files[0]); }}
+                    onDragOver={(e) => e.preventDefault()}
+                  >
+                    <Upload className="h-10 w-10 text-gray-400 mx-auto mb-3" />
+                    <p className="text-sm font-medium text-gray-700">
+                      {bulkFile ? bulkFile.name : 'Click to select or drag & drop CSV file'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Max 500 rows per upload</p>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".csv"
+                      className="hidden"
+                      onChange={(e) => setBulkFile(e.target.files?.[0] || null)}
+                    />
+                  </div>
+                  <div className="flex gap-3 mt-5">
+                    <button type="button" onClick={() => setShowBulkModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                    <button type="submit" disabled={!bulkFile || bulkLoading} className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700 disabled:opacity-50">
+                      {bulkLoading ? 'Uploading...' : 'Upload Leads'}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className={`rounded-lg p-5 ${bulkResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                  {bulkResult.success ? (
+                    <>
+                      <div className="flex items-center gap-2 mb-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <p className="text-sm font-semibold text-green-900">{bulkResult.message}</p>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3 text-center">
+                        <div className="bg-white rounded-lg p-3">
+                          <p className="text-lg font-bold text-green-600">{bulkResult.data.inserted}</p>
+                          <p className="text-xs text-gray-600">Added</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3">
+                          <p className="text-lg font-bold text-yellow-600">{bulkResult.data.duplicates}</p>
+                          <p className="text-xs text-gray-600">Duplicates</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3">
+                          <p className="text-lg font-bold text-red-600">{bulkResult.data.failed}</p>
+                          <p className="text-xs text-gray-600">Failed</p>
+                        </div>
+                      </div>
+                      {bulkResult.data.failedRows && bulkResult.data.failedRows.length > 0 && (
+                        <div className="mt-3 text-xs text-red-700 bg-white rounded p-2">
+                          <p className="font-medium mb-1">Failed rows:</p>
+                          {bulkResult.data.failedRows.map((r: string, i: number) => <p key={i}>{r}</p>)}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="h-5 w-5 text-red-600" />
+                      <p className="text-sm font-medium text-red-900">{bulkResult.error}</p>
+                    </div>
+                  )}
+                  <button onClick={() => { setShowBulkModal(false); }} className="mt-4 w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Close</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
