@@ -20,6 +20,7 @@ export interface Lead {
   assigned_to?: string;
   assigned_to_id?: number;
   assigned_to_name?: string;
+  assigned_at?: Date | string;
   notes?: string;
   consent_email: boolean;
   consent_phone: boolean;
@@ -106,6 +107,7 @@ export interface DashboardStats {
   conversionRate: number;
   leadsThisWeek: number;
   leadsThisMonth: number;
+  unassignedLeads: number;
   topPrograms: Array<{ program: string; count: number }>;
   leadsByStatus: Array<{ status: string; count: number }>;
   leadsByLevel: Array<{ level: string; count: number }>;

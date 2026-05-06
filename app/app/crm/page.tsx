@@ -140,7 +140,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <div className="bg-white rounded-xl p-5 shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
@@ -192,6 +192,21 @@ export default function AdminDashboard() {
           </div>
           <p className="text-xs text-gray-500 mt-1">{stats.conversionRate}% rate</p>
         </div>
+
+        {user?.role === 'admin' && (
+          <div className="bg-white rounded-xl p-5 shadow-sm border border-orange-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Unassigned</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.unassignedLeads || 0}</p>
+              </div>
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <Phone className="h-5 w-5 text-orange-600" />
+              </div>
+            </div>
+            <p className="text-xs text-orange-500 mt-1">Needs assignment</p>
+          </div>
+        )}
       </div>
 
       {/* Charts */}
@@ -277,7 +292,7 @@ export default function AdminDashboard() {
                 {user?.role === 'admin' && (
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigned To</th>
                 )}
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
@@ -334,6 +349,11 @@ export default function AdminDashboard() {
                             <option key={tc.id} value={tc.id}>{tc.name}</option>
                           ))}
                         </select>
+                        {lead.assigned_at && (
+                          <div className="text-[10px] text-gray-400 mt-1">
+                            {formatDateTime(lead.assigned_at)}
+                          </div>
+                        )}
                       </td>
                     )}
                     <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500">

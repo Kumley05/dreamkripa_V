@@ -1,31 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { getAuthUser } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
+    const authUser = getAuthUser(request);
+    const isTelecaller = authUser && authUser.role === 'telecaller';
+    const telecallerId = authUser?.id;
+
+    // Build base WHERE clause for telecaller filtering
+    const telecallerWhere = isTelecaller
+      ? 'AND (assigned_to_id = ? OR assigned_to_id IS NULL)'
+      : '';
+    const telecallerParams = isTelecaller ? [telecallerId] : [];
+
     // Get total leads count
-    const totalLeads = await query('SELECT COUNT(*) as count FROM leads') as any[];
+    const totalLeads = await query(
+      `SELECT COUNT(*) as count FROM leads WHERE 1=1 ${telecallerWhere}`,
+      telecallerParams
+    ) as any[];
 
     // Get leads by status
-    const leadsByStatus = await query(`
-      SELECT status, COUNT(*) as count
-      FROM leads
-      GROUP BY status
-    `) as any[];
+    const leadsByStatus = await query(
+      `SELECT status, COUNT(*) as count FROM leads WHERE 1=1 ${telecallerWhere} GROUP BY status`,
+      telecallerParams
+    ) as any[];
 
     // Get leads this week
-    const leadsThisWeek = await query(`
-      SELECT COUNT(*) as count
-      FROM leads
-      WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-    `) as any[];
+    const leadsThisWeek = await query(
+      `SELECT COUNT(*) as count FROM leads WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) ${telecallerWhere}`,
+      telecallerParams
+    ) as any[];
 
     // Get leads this month
-    const leadsThisMonth = await query(`
-      SELECT COUNT(*) as count
-      FROM leads
-      WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-    `) as any[];
+    const leadsThisMonth = await query(
+      `SELECT COUNT(*) as count FROM leads WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) ${telecallerWhere}`,
+      telecallerParams
+    ) as any[];
+
+    // Unassigned leads count (admin only)
+    let unassignedCount = 0;
+    if (!isTelecaller) {
+      const unassigned = await query(
+        'SELECT COUNT(*) as count FROM leads WHERE assigned_to_id IS NULL'
+      ) as any[];
+      unassignedCount = unassigned[0].count;
+    }
 
     // Get top programs
     const topPrograms = await query(`
@@ -34,10 +54,11 @@ export async function GET(request: NextRequest) {
         COUNT(*) as count
       FROM leads l
       LEFT JOIN programs p ON l.program_of_interest_id = p.id
+      WHERE 1=1 ${telecallerWhere}
       GROUP BY program
       ORDER BY count DESC
       LIMIT 10
-    `) as any[];
+    `, telecallerParams) as any[];
 
     // Get leads by education level
     const leadsByLevel = await query(`
@@ -45,9 +66,10 @@ export async function GET(request: NextRequest) {
         COALESCE(education_level, 'Not Specified') as level,
         COUNT(*) as count
       FROM leads
+      WHERE 1=1 ${telecallerWhere}
       GROUP BY level
       ORDER BY count DESC
-    `) as any[];
+    `, telecallerParams) as any[];
 
     // Calculate conversion rate
     const convertedLeads = leadsByStatus.find((s: any) => s.status === 'converted')?.count || 0;
@@ -64,6 +86,7 @@ export async function GET(request: NextRequest) {
       conversionRate: parseFloat(conversionRate),
       leadsThisWeek: leadsThisWeek[0].count,
       leadsThisMonth: leadsThisMonth[0].count,
+      unassignedLeads: unassignedCount,
       topPrograms,
       leadsByStatus,
       leadsByLevel,

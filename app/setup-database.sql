@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS leads (
     utm_campaign VARCHAR(255),
     status ENUM('new', 'contacted', 'qualified', 'converted', 'lost', 'duplicate') DEFAULT 'new',
     assigned_to_id INT,
+    assigned_at DATETIME DEFAULT NULL,
     notes TEXT,
     consent_email BOOLEAN DEFAULT TRUE,
     consent_phone BOOLEAN DEFAULT TRUE,

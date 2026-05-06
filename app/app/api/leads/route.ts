@@ -12,6 +12,7 @@ import {
   maskSensitiveData,
 } from '@/lib/security';
 import { sendNewLeadNotification, sendLeadConfirmationEmail, initEmailService } from '@/lib/email';
+import { getAuthUser } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,6 +20,10 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
+
+    // Check auth — telecallers only see their assigned leads
+    const authUser = getAuthUser(request);
+    const isTelecaller = authUser && authUser.role === 'telecaller';
 
     let sql = `
       SELECT
@@ -33,10 +38,21 @@ export async function GET(request: NextRequest) {
     `;
 
     const params: any[] = [];
+    const conditions: string[] = [];
 
     if (status) {
-      sql += ' WHERE l.status = ?';
+      conditions.push('l.status = ?');
       params.push(status);
+    }
+
+    // Telecaller: only see leads assigned to them (and unassigned leads)
+    if (isTelecaller) {
+      conditions.push('(l.assigned_to_id = ? OR l.assigned_to_id IS NULL)');
+      params.push(authUser.id);
+    }
+
+    if (conditions.length > 0) {
+      sql += ' WHERE ' + conditions.join(' AND ');
     }
 
     sql += ' ORDER BY l.created_at DESC LIMIT ? OFFSET ?';

@@ -151,6 +151,7 @@ export default function LeadDetailPage() {
       ['State', lead!.state || ''],
       ['Status', lead!.status],
       ['Assigned To', lead!.assigned_to_name || 'Unassigned'],
+      ['Assigned On', lead!.assigned_at ? formatDateTime(lead!.assigned_at) : 'Not assigned'],
       ['Created', formatDateTime(lead!.created_at)],
       ['Message', (lead!.message || '').replace(/"/g, '""')],
       [''],
@@ -449,6 +450,9 @@ export default function LeadDetailPage() {
               {lead.assigned_to_name && (
                 <div className="mt-2 text-xs text-gray-500">
                   Currently assigned to: <span className="font-medium text-gray-700">{lead.assigned_to_name}</span>
+                  {lead.assigned_at && (
+                    <span className="text-gray-400"> — assigned {formatDateTime(lead.assigned_at)}</span>
+                  )}
                 </div>
               )}
             </div>
@@ -472,6 +476,15 @@ export default function LeadDetailPage() {
                   <div className="text-sm font-medium text-gray-900">{formatDateTime(lead.updated_at)}</div>
                 </div>
               </div>
+              {lead.assigned_at && (
+                <div className="flex items-center gap-2">
+                  <UserIcon className="h-4 w-4 text-gray-400" />
+                  <div>
+                    <div className="text-xs text-gray-500">Assigned On</div>
+                    <div className="text-sm font-medium text-gray-900">{formatDateTime(lead.assigned_at)} — {lead.assigned_to_name || 'Unknown'}</div>
+                  </div>
+                </div>
+              )}
               {lead.source && (
                 <div className="flex items-center gap-2">
                   <Send className="h-4 w-4 text-gray-400" />
