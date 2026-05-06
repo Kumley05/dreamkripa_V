@@ -1,5 +1,6 @@
 # Environment variables - contains sensitive credentials
 .env
+.env.*
 
 # Dependencies
 node_modules/
@@ -8,6 +9,13 @@ __pycache__/
 *$py.class
 *.so
 .Python
+
+# Python / Flask artifacts (prevents Vercel auto-detecting Python)
+requirements.txt
+runtime.txt
+Procfile
+render.yaml
+*.py
 
 # Playwright test screenshots
 *.png
@@ -34,3 +42,9 @@ yarn-error.log*
 *.sql
 *.db
 *.sqlite
+
+# Deployment (managed by Vercel)
+.vercel
+
+# Root-level lock files (app has its own)
+/package-lock.json

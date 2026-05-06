@@ -1,4 +1,0 @@
-web:
-  command: npm run start
-  environment:
-    NODE_ENV: production
