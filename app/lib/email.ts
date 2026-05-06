@@ -178,7 +178,7 @@ export async function sendLeadConfirmationEmail(leadData: LeadData): Promise<boo
           <p>If you have any urgent questions, feel free to reach out to us:</p>
           <ul>
             <li>📧 Email: admissions@Sample.com</li>
-            <li>📱 Phone: +91 98765 43210</li>
+            <li>📱 Phone: +91 96065 80847</li>
           </ul>
 
           <p>We're excited to help you achieve your academic dreams!</p>

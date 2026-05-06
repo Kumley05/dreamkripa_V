@@ -77,7 +77,7 @@ const faqCategories = [
     questions: [
       {
         q: 'How can I contact a counselor?',
-        a: 'You can reach us by phone (+91 98765 43210), email (support@dreamkripa.com), or fill out the contact form on our website. Our counselors are available Monday to Saturday, 9 AM to 6 PM IST.',
+        a: 'You can reach us by phone (+91 96065 80847), email (support@dreamkripa.com), or fill out the contact form on our website. Our counselors are available Monday to Saturday, 9 AM to 6 PM IST.',
       },
       {
         q: 'How long does it take to get a response?',

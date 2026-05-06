@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 const supportChannels = [
-  { icon: Phone, title: 'Call Us', desc: 'Speak directly with a counselor', value: '+91 98765 43210', action: 'tel:+919876543210', color: 'bg-green-100 text-green-600' },
+  { icon: Phone, title: 'Call Us', desc: 'Speak directly with a counselor', value: '+91 96065 80847', action: 'tel:+919606580847', color: 'bg-green-100 text-green-600' },
   { icon: Mail, title: 'Email Support', desc: 'Send us a detailed query', value: 'support@dreamkripa.com', action: 'mailto:support@dreamkripa.com', color: 'bg-blue-100 text-blue-600' },
   { icon: MessageSquare, title: 'Live Chat', desc: 'Chat with us in real-time', value: 'Available 9 AM - 6 PM', action: '#', color: 'bg-violet-100 text-violet-600' },
   { icon: Clock, title: 'Working Hours', desc: 'Mon - Sat, 9:00 AM - 6:00 PM IST', value: 'Closed Sundays & Holidays', action: '#', color: 'bg-orange-100 text-orange-600' },

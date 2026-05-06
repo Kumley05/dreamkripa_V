@@ -624,7 +624,7 @@ function ContactPageContent() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                      <p className="text-gray-600">+91 98765 43210</p>
+                      <p className="text-gray-600">+91 96065 80847</p>
                       <p className="text-sm text-gray-500">Mon-Sat, 9AM-6PM IST</p>
                     </div>
                   </div>

@@ -113,7 +113,7 @@ export default function TermsPage() {
               <p>For questions about these Terms of Service, please contact us:</p>
               <ul className="list-none mt-3 space-y-1">
                 <li>📧 Email: <a href="mailto:legal@dreamkripa.com" className="text-violet-600 hover:underline">legal@dreamkripa.com</a></li>
-                <li>📞 Phone: +91 98765 43210</li>
+                <li>📞 Phone: +91 96065 80847</li>
               </ul>
             </div>
           </div>

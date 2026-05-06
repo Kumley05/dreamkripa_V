@@ -98,7 +98,7 @@ export default function PrivacyPage() {
               <p>If you have any questions or concerns about this privacy policy or your data, please contact us:</p>
               <ul className="list-none mt-3 space-y-1">
                 <li>📧 Email: <a href="mailto:privacy@dreamkripa.com" className="text-violet-600 hover:underline">privacy@dreamkripa.com</a></li>
-                <li>📞 Phone: +91 98765 43210</li>
+                <li>📞 Phone: +91 96065 80847</li>
                 <li>🕐 Response time: Within 48 hours</li>
               </ul>
             </div>
