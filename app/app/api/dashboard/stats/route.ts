@@ -4,9 +4,25 @@ import { getAuthUser } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const authUser = getAuthUser(request);
-    const isTelecaller = authUser && authUser.role === 'telecaller';
-    const telecallerId = authUser?.id;
+    // Require authentication — also check cookie as fallback
+    let authUser = getAuthUser(request);
+    if (!authUser) {
+      const token = request.cookies.get('auth_token')?.value;
+      if (token) {
+        const { verifyToken } = await import('@/lib/auth');
+        authUser = verifyToken(token);
+      }
+    }
+
+    if (!authUser) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const isTelecaller = authUser.role === 'telecaller';
+    const telecallerId = authUser.id;
 
     // Build base WHERE clause for telecaller filtering
     const telecallerWhere = isTelecaller

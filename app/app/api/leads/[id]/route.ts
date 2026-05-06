@@ -67,9 +67,22 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // Check auth — telecallers can only see their own leads or unassigned
-    const authUser = getAuthUser(request);
-    const isTelecaller = authUser && authUser.role === 'telecaller';
+    // Check auth — require authentication
+    let authUser = getAuthUser(request);
+    if (!authUser) {
+      const token = request.cookies.get('auth_token')?.value;
+      if (token) {
+        const { verifyToken } = await import('@/lib/auth');
+        authUser = verifyToken(token);
+      }
+    }
+    if (!authUser) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    const isTelecaller = authUser.role === 'telecaller';
 
     let sql = `
       SELECT l.*, p.title as program_title, c.name as category_name,

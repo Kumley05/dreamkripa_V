@@ -21,9 +21,25 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    // Check auth — telecallers only see their assigned leads
-    const authUser = getAuthUser(request);
-    const isTelecaller = authUser && authUser.role === 'telecaller';
+    // Require authentication — also check cookie as fallback
+    let authUser = getAuthUser(request);
+    if (!authUser) {
+      const token = request.cookies.get('auth_token')?.value;
+      if (token) {
+        const { verifyToken } = await import('@/lib/auth');
+        authUser = verifyToken(token);
+      }
+    }
+
+    if (!authUser) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const isTelecaller = authUser.role === 'telecaller';
+    const isAdmin = authUser.role === 'admin';
 
     let sql = `
       SELECT

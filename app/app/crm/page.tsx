@@ -45,6 +45,7 @@ export default function AdminDashboard() {
   const fetchStats = async () => {
     try {
       const response = await fetch('/api/dashboard/stats', { headers: getAuthHeaders() });
+      if (response.status === 401) { router.push('/crm/login'); return; }
       const data = await response.json();
       if (data.success) setStats(data.data);
     } catch (error) {
@@ -58,6 +59,7 @@ export default function AdminDashboard() {
       const params = new URLSearchParams();
       if (filterStatus !== 'all') params.append('status', filterStatus);
       const response = await fetch(`/api/leads?${params.toString()}`, { headers: getAuthHeaders() });
+      if (response.status === 401) { router.push('/crm/login'); return; }
       const data = await response.json();
       if (data.success) setLeads(data.data);
     } catch (error) {
