@@ -125,8 +125,16 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <span className={`px-2 py-0.5 rounded text-xs font-medium ${user?.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+              {user?.role === 'admin' ? 'Admin' : 'Telecaller'}
+            </span>
+          </div>
           <p className="text-gray-600">Welcome back, {user?.name}</p>
+          {user?.role === 'telecaller' && (
+            <p className="text-xs text-gray-400 mt-0.5">Showing leads assigned to you and unassigned leads</p>
+          )}
         </div>
         {user?.role === 'admin' && (
           <button
