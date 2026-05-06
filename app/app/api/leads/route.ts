@@ -24,10 +24,12 @@ export async function GET(request: NextRequest) {
       SELECT
         l.*,
         p.title as program_title,
-        c.name as category_name
+        c.name as category_name,
+        u.name as assigned_to_name
       FROM leads l
       LEFT JOIN programs p ON l.program_of_interest_id = p.id
       LEFT JOIN program_categories c ON l.program_category_id = c.id
+      LEFT JOIN users u ON l.assigned_to_id = u.id
     `;
 
     const params: any[] = [];

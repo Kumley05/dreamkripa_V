@@ -18,6 +18,8 @@ export interface Lead {
   utm_campaign?: string;
   status: 'new' | 'contacted' | 'qualified' | 'converted' | 'lost' | 'duplicate';
   assigned_to?: string;
+  assigned_to_id?: number;
+  assigned_to_name?: string;
   notes?: string;
   consent_email: boolean;
   consent_phone: boolean;
@@ -26,7 +28,9 @@ export interface Lead {
   created_at: Date | string;
   updated_at: Date | string;
   program?: Program;
+  program_title?: string;
   category?: ProgramCategory;
+  category_name?: string;
 }
 
 export interface Program {
@@ -105,6 +109,30 @@ export interface DashboardStats {
   topPrograms: Array<{ program: string; count: number }>;
   leadsByStatus: Array<{ status: string; count: number }>;
   leadsByLevel: Array<{ level: string; count: number }>;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'telecaller';
+  phone?: string;
+  is_active: boolean;
+  created_at: Date | string;
+  updated_at: Date | string;
+}
+
+export interface FollowUp {
+  id: number;
+  lead_id: number;
+  user_id: number;
+  status: string;
+  remarks?: string;
+  next_followup_at?: Date | string;
+  created_at: Date | string;
+  updated_at: Date | string;
+  user_name?: string;
+  user_role?: string;
 }
 
 export interface ApiResponse<T = any> {

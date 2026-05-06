@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { GraduationCap, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube } from 'lucide-react';
 
 const footerLinks = {
   programs: [
@@ -30,35 +31,41 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-blue-600 text-white p-2 rounded-lg">
-                <GraduationCap className="h-6 w-6" />
-              </div>
-              <div>
-                <span className="text-xl font-bold text-white block leading-tight">
-                  Sample
+            <div className="flex items-center space-x-3 mb-4">
+              <Image
+                src="/logo.png"
+                alt="Dreamkripa"
+                width={56}
+                height={56}
+                className="h-14 w-14"
+              />
+              <div className="flex flex-col">
+                <span className="text-2xl font-extrabold leading-tight">
+                  <span className="text-white">Dream</span><span className="text-[#D472BD]">kripa</span>
                 </span>
-                <span className="text-xs text-gray-400">Nav Business</span>
+                <span className="text-[9px] text-[#B8C96B] font-bold tracking-[0.18em] uppercase leading-none mt-0.5">
+                  Your Gateway to Elite Colleges
+                </span>
               </div>
             </div>
             <p className="text-gray-400 mb-4 text-sm leading-relaxed">
-              Your trusted partner in higher education. We help students discover their dreams and achieve academic excellence through personalized guidance and support.
+              Your Gateway to Elite Colleges. We help students discover their dreams and achieve academic excellence through personalized guidance and support.
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-blue-400" />
-                <a href="mailto:admissions@Sample.com" className="hover:text-white transition-colors">
-                  admissions@Sample.com
+                <Mail className="h-4 w-4 text-[#D472BD]" />
+                <a href="mailto:admissions@dreamkripa.com" className="hover:text-white transition-colors">
+                  admissions@dreamkripa.com
                 </a>
               </div>
               <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-blue-400" />
+                <Phone className="h-4 w-4 text-[#D472BD]" />
                 <a href="tel:+919876543210" className="hover:text-white transition-colors">
                   +91 98765 43210
                 </a>
               </div>
               <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-blue-400" />
+                <MapPin className="h-4 w-4 text-[#B8C96B]" />
                 <span>India</span>
               </div>
             </div>
@@ -72,7 +79,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[#D472BD] transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -89,7 +96,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[#D472BD] transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -106,7 +113,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[#B8C96B] transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -120,33 +127,41 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} Sample Nav Business. All rights reserved.
+              © {new Date().getFullYear()} Dreamkripa. All rights reserved.
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
+                href="https://www.facebook.com/dreamkripa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-[#D472BD] transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
+                href="https://twitter.com/dreamkripa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-[#D472BD] transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
+                href="https://www.linkedin.com/company/dreamkripa/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-[#D472BD] transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
+                href="https://www.youtube.com/@dreamkripa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-[#D472BD] transition-colors"
                 aria-label="YouTube"
               >
                 <Youtube className="h-5 w-5" />

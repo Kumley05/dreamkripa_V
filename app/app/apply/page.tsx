@@ -72,10 +72,10 @@ function ApplyPageContent() {
 
   useEffect(() => {
     if (formData.programCategoryId) {
-      const filtered = programs.filter(p => p.category_id === formData.programCategoryId);
+      const filtered = programs.filter(p => Number(p.category_id) === Number(formData.programCategoryId));
       setFilteredPrograms(filtered);
     } else {
-      setFilteredPrograms(programs);
+      setFilteredPrograms([]);
     }
   }, [formData.programCategoryId, programs]);
 
@@ -85,8 +85,8 @@ function ApplyPageContent() {
       if (program) {
         setFormData(prev => ({
           ...prev,
-          programId: program.id,
-          programCategoryId: program.category_id,
+          programId: Number(program.id),
+          programCategoryId: Number(program.category_id),
         }));
       }
     }
@@ -142,7 +142,7 @@ function ApplyPageContent() {
 
     if (step === 2) {
       if (!formData.programCategoryId) {
-        newErrors.programCategoryId = 'Please select a category';
+        newErrors.programCategoryId = 'Please select a field';
       }
       if (!formData.programId) {
         newErrors.programId = 'Please select a program';
@@ -168,10 +168,19 @@ function ApplyPageContent() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    const parsedValue = (() => {
+      if (type === 'checkbox') return (e.target as HTMLInputElement).checked;
+      if (name === 'programCategoryId' || name === 'programId') return value ? parseInt(value, 10) : undefined;
+      return value;
+    })();
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      [name]: parsedValue,
     }));
+    // Reset program when category changes
+    if (name === 'programCategoryId') {
+      setFormData(prev => ({ ...prev, programId: undefined }));
+    }
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => {
@@ -404,64 +413,16 @@ function ApplyPageContent() {
                     <h2 className="text-lg font-semibold text-gray-900">Program Selection</h2>
                   </div>
 
+                  {/* 1. Education Level */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Program Category *
-                    </label>
-                    <select
-                      name="programCategoryId"
-                      value={formData.programCategoryId || ''}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.programCategoryId ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.icon} {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.programCategoryId && (
-                      <p className="text-red-600 text-sm mt-1">{errors.programCategoryId}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Program *
-                    </label>
-                    <select
-                      name="programId"
-                      value={formData.programId || ''}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.programId ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      disabled={!formData.programCategoryId}
-                    >
-                      <option value="">Select a program</option>
-                      {filteredPrograms.map((prog) => (
-                        <option key={prog.id} value={prog.id}>
-                          {prog.title} ({prog.duration})
-                        </option>
-                      ))}
-                    </select>
-                    {errors.programId && (
-                      <p className="text-red-600 text-sm mt-1">{errors.programId}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Current Education Level *
+                      Current Education Level <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="educationLevel"
                       value={formData.educationLevel}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white ${
                         errors.educationLevel ? 'border-red-500' : 'border-gray-300'
                       }`}
                     >
@@ -472,6 +433,59 @@ function ApplyPageContent() {
                     </select>
                     {errors.educationLevel && (
                       <p className="text-red-600 text-sm mt-1">{errors.educationLevel}</p>
+                    )}
+                  </div>
+
+                  {/* 2. Program Category (without "Category" keyword) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Select Your Field <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="programCategoryId"
+                      value={formData.programCategoryId || ''}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white ${
+                        errors.programCategoryId ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    >
+                      <option value="">Select a field</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.programCategoryId && (
+                      <p className="text-red-600 text-sm mt-1">{errors.programCategoryId}</p>
+                    )}
+                  </div>
+
+                  {/* 3. Program (Specialization) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Program <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="programId"
+                      value={formData.programId || ''}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white ${
+                        errors.programId ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      disabled={!formData.programCategoryId}
+                    >
+                      <option value="">
+                        {formData.programCategoryId ? 'Select a program' : 'Select a field first'}
+                      </option>
+                      {filteredPrograms.map((prog) => (
+                        <option key={prog.id} value={prog.id}>
+                          {prog.title}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.programId && (
+                      <p className="text-red-600 text-sm mt-1">{errors.programId}</p>
                     )}
                   </div>
                 </div>

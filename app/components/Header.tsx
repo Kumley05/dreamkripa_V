@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, GraduationCap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -21,15 +22,22 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2 group">
-              <div className="bg-blue-600 text-white p-2 rounded-lg group-hover:bg-blue-700 transition-colors">
-                <GraduationCap className="h-6 w-6" />
-              </div>
-              <div>
-                <span className="text-xl font-bold text-gray-900 block leading-tight">
-                  Sample
+            <Link href="/" className="flex items-center space-x-3 group">
+              <Image
+                src="/logo.png"
+                alt="Dreamkripa"
+                width={48}
+                height={48}
+                className="h-12 w-12"
+                priority
+              />
+              <div className="flex flex-col">
+                <span className="text-xl font-extrabold leading-tight">
+                  <span className="text-[#1F2937]">Dream</span><span className="text-[#A84296]">kripa</span>
                 </span>
-                <span className="text-xs text-gray-600">Higher Education</span>
+                <span className="text-[9px] text-[#8B9F3B] font-bold tracking-[0.18em] uppercase leading-none mt-0.5">
+                  Your Gateway to Elite Colleges
+                </span>
               </div>
             </Link>
           </div>
@@ -40,14 +48,14 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-gray-700 hover:text-[#A84296] font-medium transition-colors"
               >
                 {item.name}
               </Link>
             ))}
             <Link
               href="/apply"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+              className="bg-[#A84296] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#8E3780] transition-colors shadow-md hover:shadow-lg"
             >
               Apply Now
             </Link>
@@ -57,7 +65,7 @@ export default function Header() {
           <div className="flex md:hidden">
             <button
               type="button"
-              className="text-gray-700 hover:text-blue-600 p-2"
+              className="text-gray-700 hover:text-[#A84296] p-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -79,7 +87,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+                className="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-[#A84296]"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
@@ -87,7 +95,7 @@ export default function Header() {
             ))}
             <Link
               href="/apply"
-              className="block rounded-lg px-3 py-2 text-base font-medium bg-blue-600 text-white hover:bg-blue-700 text-center"
+              className="block rounded-lg px-3 py-2 text-base font-medium bg-[#A84296] text-white hover:bg-[#8E3780] text-center"
               onClick={() => setMobileMenuOpen(false)}
             >
               Apply Now

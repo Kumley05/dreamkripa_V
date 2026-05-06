@@ -58,7 +58,7 @@ const testimonials = [
     program: 'B.Tech Computer Science',
     university: 'IIT Delhi',
     image: 'PS',
-    quote: 'Sample Nav Business helped me discover my passion for Computer Science. Their counselors understood my strengths and guided me to the right program. Today, I\'m pursuing my dream at IIT!',
+    quote: 'Dreamkripa helped me discover my passion for Computer Science. Their counselors understood my strengths and guided me to the right program. Today, I\'m pursuing my dream at IIT!',
     year: 'Batch of 2023',
   },
   {
@@ -149,7 +149,7 @@ export default function AboutPage() {
                 </span>
               </h1>
               <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                For over 15 years, Sample Nav Business has been the trusted partner for
+                For over 15 years, Dreamkripa has been the trusted partner for
                 Indian students navigating their higher education journey. We've helped
                 <span className="font-semibold text-white"> 50,000+ students </span>
                 discover their true potential and achieve their academic dreams.

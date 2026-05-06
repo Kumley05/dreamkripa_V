@@ -1,41 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
-import { leadUpdateSchema } from '@/lib/validations';
-import { z } from 'zod';
 
+// PATCH /api/leads/[id] - Update lead (status, assignment, etc.)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const leadId = parseInt(id);
-    if (isNaN(leadId)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid lead ID' },
-        { status: 400 }
-      );
-    }
-
     const body = await request.json();
-    const validatedData = leadUpdateSchema.parse(body);
+    const { status, assigned_to_id } = body;
 
-    // Build update query dynamically
     const updates: string[] = [];
     const values: any[] = [];
 
-    if (validatedData.status) {
-      updates.push('status = ?');
-      values.push(validatedData.status);
-    }
-    if (validatedData.assignedTo !== undefined) {
-      updates.push('assigned_to = ?');
-      values.push(validatedData.assignedTo);
-    }
-    if (validatedData.notes !== undefined) {
-      updates.push('notes = ?');
-      values.push(validatedData.notes);
-    }
+    if (status) { updates.push('status = ?'); values.push(status); }
+    if (assigned_to_id !== undefined) { updates.push('assigned_to_id = ?'); values.push(assigned_to_id || null); }
 
     if (updates.length === 0) {
       return NextResponse.json(
@@ -44,36 +24,24 @@ export async function PATCH(
       );
     }
 
-    values.push(leadId);
+    values.push(id);
+    await query(`UPDATE leads SET ${updates.join(', ')} WHERE id = ?`, values);
 
-    await query(
-      `UPDATE leads SET ${updates.join(', ')} WHERE id = ?`,
-      values
-    );
+    // Fetch updated lead with relations
+    const leads = await query(
+      `SELECT l.*, p.title as program_title, c.name as category_name,
+        u.name as assigned_to_name
+      FROM leads l
+      LEFT JOIN programs p ON l.program_of_interest_id = p.id
+      LEFT JOIN program_categories c ON l.program_category_id = c.id
+      LEFT JOIN users u ON l.assigned_to_id = u.id
+      WHERE l.id = ?`,
+      [id]
+    ) as any[];
 
-    // Log activity
-    if (validatedData.status) {
-      await query(
-        `INSERT INTO lead_activities (lead_id, activity_type, description, performed_by)
-         VALUES (?, 'status_changed', ?, 'admin')`,
-        [leadId, `Status changed to ${validatedData.status}`]
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Lead updated successfully',
-    });
+    return NextResponse.json({ success: true, data: leads[0] });
   } catch (error) {
     console.error('Error updating lead:', error);
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { success: false, error: 'Validation failed', details: error.issues },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
       { success: false, error: 'Failed to update lead' },
       { status: 500 }
@@ -81,26 +49,16 @@ export async function PATCH(
   }
 }
 
+// DELETE /api/leads/[id]
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const leadId = parseInt(id);
-    if (isNaN(leadId)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid lead ID' },
-        { status: 400 }
-      );
-    }
-
-    await query('DELETE FROM leads WHERE id = ?', [leadId]);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Lead deleted successfully',
-    });
+    await query('DELETE FROM lead_followups WHERE lead_id = ?', [id]);
+    await query('DELETE FROM leads WHERE id = ?', [id]);
+    return NextResponse.json({ success: true, message: 'Lead deleted' });
   } catch (error) {
     console.error('Error deleting lead:', error);
     return NextResponse.json(
