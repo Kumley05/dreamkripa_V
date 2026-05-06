@@ -351,6 +351,82 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      {/* Telecaller Performance — Admin Only */}
+      {user?.role === 'admin' && stats.telecallerPerformance && stats.telecallerPerformance.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <UserCheck className="h-5 w-5 mr-2 text-[#A84296]" />
+            Telecaller Performance
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {stats.telecallerPerformance.map((tc) => (
+              <div key={tc.id} className="bg-white rounded-xl p-5 shadow-sm border hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-[#FDF2F8] flex items-center justify-center text-[#A84296] font-bold text-sm">
+                    {tc.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 truncate">{tc.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{tc.email}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                  <div className="bg-blue-50 rounded-lg py-2">
+                    <p className="text-lg font-bold text-blue-700">{tc.total_assigned}</p>
+                    <p className="text-[10px] text-blue-600 font-medium">Assigned</p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg py-2">
+                    <p className="text-lg font-bold text-green-700">{tc.converted_count}</p>
+                    <p className="text-[10px] text-green-600 font-medium">Converted</p>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg py-2">
+                    <p className="text-lg font-bold text-purple-700">{tc.total_followups}</p>
+                    <p className="text-[10px] text-purple-600 font-medium">Follow-ups</p>
+                  </div>
+                </div>
+
+                {/* Status breakdown bar */}
+                <div className="mb-2">
+                  <div className="flex h-2 rounded-full overflow-hidden bg-gray-100">
+                    {tc.new_count > 0 && <div className="bg-blue-500" style={{ width: `${(tc.new_count / tc.total_assigned) * 100}%` }} title={`New: ${tc.new_count}`} />}
+                    {tc.contacted_count > 0 && <div className="bg-yellow-500" style={{ width: `${(tc.contacted_count / tc.total_assigned) * 100}%` }} title={`Contacted: ${tc.contacted_count}`} />}
+                    {tc.qualified_count > 0 && <div className="bg-purple-500" style={{ width: `${(tc.qualified_count / tc.total_assigned) * 100}%` }} title={`Qualified: ${tc.qualified_count}`} />}
+                    {tc.converted_count > 0 && <div className="bg-green-500" style={{ width: `${(tc.converted_count / tc.total_assigned) * 100}%` }} title={`Converted: ${tc.converted_count}`} />}
+                    {tc.lost_count > 0 && <div className="bg-red-500" style={{ width: `${(tc.lost_count / tc.total_assigned) * 100}%` }} title={`Lost: ${tc.lost_count}`} />}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <span>Conv. Rate: <span className="font-semibold text-gray-900">{tc.conversion_rate}%</span></span>
+                  {tc.last_followup_at && (
+                    <span>Last follow-up: <span className="font-medium">{formatDateTime(tc.last_followup_at)}</span></span>
+                  )}
+                </div>
+
+                {/* Detailed status counts */}
+                <div className="mt-3 pt-3 border-t flex flex-wrap gap-1.5">
+                  {tc.new_count > 0 && <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-medium">{tc.new_count} new</span>}
+                  {tc.contacted_count > 0 && <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded text-[10px] font-medium">{tc.contacted_count} contacted</span>}
+                  {tc.qualified_count > 0 && <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-medium">{tc.qualified_count} qualified</span>}
+                  {tc.converted_count > 0 && <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-medium">{tc.converted_count} converted</span>}
+                  {tc.lost_count > 0 && <span className="px-1.5 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-medium">{tc.lost_count} lost</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Telecaller Performance — Admin Only (empty state) */}
+      {user?.role === 'admin' && stats.telecallerPerformance && stats.telecallerPerformance.length === 0 && (
+        <div className="mb-8 bg-white rounded-xl p-8 shadow-sm border text-center">
+          <Users className="h-10 w-10 text-gray-400 mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">No Active Telecallers</h3>
+          <p className="text-xs text-gray-500">Add telecallers from the <Link href="/crm/users" className="text-[#A84296] font-medium hover:underline">Users page</Link> to see their performance here.</p>
+        </div>
+      )}
+
       {/* Leads Table */}
       <div className="bg-white rounded-xl shadow-sm border">
         <div className="p-6 border-b">

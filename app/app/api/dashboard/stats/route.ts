@@ -93,6 +93,65 @@ export async function GET(request: NextRequest) {
       ? ((convertedLeads / totalLeads[0].count) * 100).toFixed(1)
       : '0.0';
 
+    // Telecaller performance (admin only)
+    let telecallerPerformance: any[] = [];
+    if (!isTelecaller) {
+      const tcPerf = await query(`
+        SELECT
+          u.id,
+          u.name,
+          u.email,
+          u.phone,
+          u.profile_picture,
+          COUNT(l.id) as total_assigned,
+          SUM(CASE WHEN l.status = 'new' THEN 1 ELSE 0 END) as new_count,
+          SUM(CASE WHEN l.status = 'contacted' THEN 1 ELSE 0 END) as contacted_count,
+          SUM(CASE WHEN l.status = 'qualified' THEN 1 ELSE 0 END) as qualified_count,
+          SUM(CASE WHEN l.status = 'converted' THEN 1 ELSE 0 END) as converted_count,
+          SUM(CASE WHEN l.status = 'lost' THEN 1 ELSE 0 END) as lost_count
+        FROM users u
+        LEFT JOIN leads l ON l.assigned_to_id = u.id
+        WHERE u.role = 'telecaller' AND u.is_active = TRUE
+        GROUP BY u.id, u.name, u.email, u.phone, u.profile_picture
+        ORDER BY total_assigned DESC
+      `) as any[];
+
+      // Get follow-up counts per telecaller
+      const followupCounts = await query(`
+        SELECT
+          lf.user_id,
+          COUNT(lf.id) as total_followups,
+          MAX(lf.created_at) as last_followup_at
+        FROM lead_followups lf
+        GROUP BY lf.user_id
+      `) as any[];
+
+      const followupMap = new Map(followupCounts.map((f: any) => [f.user_id, f]));
+
+      telecallerPerformance = tcPerf.map((tc: any) => {
+        const fu = followupMap.get(tc.id) || { total_followups: 0, last_followup_at: null };
+        const convRate = tc.total_assigned > 0
+          ? ((tc.converted_count / tc.total_assigned) * 100).toFixed(1)
+          : '0.0';
+        return {
+          id: tc.id,
+          name: tc.name,
+          email: tc.email,
+          phone: tc.phone,
+          profile_picture: tc.profile_picture,
+          total_assigned: tc.total_assigned,
+          new_count: tc.new_count,
+          contacted_count: tc.contacted_count,
+          qualified_count: tc.qualified_count,
+          converted_count: tc.converted_count,
+          lost_count: tc.lost_count,
+          total_followups: fu.total_followups,
+          last_followup_at: fu.last_followup_at,
+          conversion_rate: parseFloat(convRate),
+        };
+      });
+    }
+
     const stats = {
       totalLeads: totalLeads[0].count,
       newLeads: leadsByStatus.find((s: any) => s.status === 'new')?.count || 0,
@@ -106,6 +165,7 @@ export async function GET(request: NextRequest) {
       topPrograms,
       leadsByStatus,
       leadsByLevel,
+      telecallerPerformance,
     };
 
     return NextResponse.json({

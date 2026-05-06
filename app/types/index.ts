@@ -98,6 +98,23 @@ export interface ContactFormData {
   message: string;
 }
 
+export interface TelecallerPerformance {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  profile_picture?: string;
+  total_assigned: number;
+  new_count: number;
+  contacted_count: number;
+  qualified_count: number;
+  converted_count: number;
+  lost_count: number;
+  total_followups: number;
+  last_followup_at: string | null;
+  conversion_rate: number;
+}
+
 export interface DashboardStats {
   totalLeads: number;
   newLeads: number;
@@ -111,6 +128,7 @@ export interface DashboardStats {
   topPrograms: Array<{ program: string; count: number }>;
   leadsByStatus: Array<{ status: string; count: number }>;
   leadsByLevel: Array<{ level: string; count: number }>;
+  telecallerPerformance: TelecallerPerformance[];
 }
 
 export interface User {
