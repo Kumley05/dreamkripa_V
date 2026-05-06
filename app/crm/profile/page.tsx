@@ -46,7 +46,7 @@ export default function ProfilePage() {
     try {
       const formData = new FormData();
       formData.append('profile_picture', file);
-      const response = await fetch(`/api/users/${user?.id}/profile-picture`, {
+      const response = await fetch(`/api/users/${user?.id}?action=profile-picture`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: formData,
@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
   const handleRemovePicture = async () => {
     try {
-      const response = await fetch(`/api/users/${user?.id}/profile-picture`, {
+      const response = await fetch(`/api/users/${user?.id}?action=profile-picture`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
@@ -127,7 +127,7 @@ export default function ProfilePage() {
 
     setSavingPassword(true);
     try {
-      const response = await fetch(`/api/users/${user?.id}/change-password`, {
+      const response = await fetch(`/api/users/${user?.id}?action=change-password`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
