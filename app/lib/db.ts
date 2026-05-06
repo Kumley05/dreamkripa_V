@@ -4,6 +4,8 @@ let pool: mysql.Pool | null = null;
 
 export function getPool() {
   if (!pool) {
+    const isProduction = process.env.NODE_ENV === 'production';
+
     pool = mysql.createPool({
       host: process.env.DATABASE_HOST || 'localhost',
       port: parseInt(process.env.DATABASE_PORT || '3306'),
@@ -15,6 +17,8 @@ export function getPool() {
       queueLimit: 0,
       enableKeepAlive: true,
       keepAliveInitialDelay: 0,
+      // Aiven and other cloud providers require SSL
+      ssl: isProduction ? { rejectUnauthorized: false } : undefined,
     });
   }
   return pool;
