@@ -17,8 +17,9 @@ Procfile
 render.yaml
 *.py
 
-# Playwright test screenshots
-*.png
+# Playwright test screenshots (root level only)
+/*.png
+!public/**/*.png
 .playwright-mcp/
 
 # IDE
