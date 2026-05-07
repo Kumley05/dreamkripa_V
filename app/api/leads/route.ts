@@ -12,8 +12,9 @@ import {
   maskSensitiveData,
 } from '@/lib/security';
 import { sendNewLeadNotification, sendLeadConfirmationEmail, initEmailService } from '@/lib/email';
-import { getAuthUser } from '@/lib/auth';
+import { getAuthUser, requireAdmin } from '@/lib/auth';
 
+// GET /api/leads — List leads (CRM dashboard)
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -39,7 +40,6 @@ export async function GET(request: NextRequest) {
     }
 
     const isTelecaller = authUser.role === 'telecaller';
-    const isAdmin = authUser.role === 'admin';
 
     let sql = `
       SELECT
@@ -61,7 +61,6 @@ export async function GET(request: NextRequest) {
       params.push(status);
     }
 
-    // Telecaller: only see leads assigned to them (and unassigned leads)
     if (isTelecaller) {
       conditions.push('(l.assigned_to_id = ? OR l.assigned_to_id IS NULL)');
       params.push(authUser.id);
@@ -89,7 +88,22 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// POST /api/leads?action=bulk|manual — or default (public form submission)
 export async function POST(request: NextRequest) {
+  const action = request.nextUrl.searchParams.get('action');
+
+  switch (action) {
+    case 'bulk':
+      return handleBulkUpload(request);
+    case 'manual':
+      return handleManualLead(request);
+    default:
+      return handlePublicSubmission(request);
+  }
+}
+
+// Public lead form submission
+async function handlePublicSubmission(request: NextRequest) {
   // Rate limiting
   const clientId = getClientIdentifier(request);
   const rateLimitResult = await rateLimit(clientId, { windowMs: 60000, maxRequests: 5 });
@@ -109,7 +123,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate request body
     const validatedData = leadFormSchema.parse(body);
 
     // Check for duplicate email
@@ -119,7 +132,6 @@ export async function POST(request: NextRequest) {
     ) as any[];
 
     if (existingLeads.length > 0) {
-      // Update existing lead as duplicate
       await query(
         'UPDATE leads SET status = ?, notes = CONCAT(IFNULL(notes, ""), ?) WHERE id = ?',
         ['duplicate', `\n[Duplicate submission on ${new Date().toISOString()}]`, existingLeads[0].id]
@@ -132,19 +144,16 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Get source and UTM parameters from headers or body
     const source = body.source || 'website';
     const utm_source = body.utm_source || request.headers.get('utm-source') || source;
     const utm_medium = body.utm_medium || request.headers.get('utm-medium') || '';
     const utm_campaign = body.utm_campaign || request.headers.get('utm-campaign') || '';
 
-    // Get IP and user agent
     const ip_address = request.headers.get('x-forwarded-for')?.split(',')[0] ||
                       request.headers.get('x-real-ip') ||
                       '';
     const user_agent = request.headers.get('user-agent') || '';
 
-    // Insert new lead
     const result = await query(
       `INSERT INTO leads (
         first_name, last_name, email, phone,
@@ -166,10 +175,10 @@ export async function POST(request: NextRequest) {
         validatedData.state || null,
         validatedData.preferredIntake || null,
         validatedData.message || null,
-        source,  // source column
-        utm_source,  // utm_source column
-        utm_medium,  // utm_medium column
-        utm_campaign,  // utm_campaign column
+        source,
+        utm_source,
+        utm_medium,
+        utm_campaign,
         validatedData.consentEmail,
         validatedData.consentPhone,
         ip_address,
@@ -179,14 +188,12 @@ export async function POST(request: NextRequest) {
 
     const leadId = result.insertId;
 
-    // Add activity log
     await query(
       `INSERT INTO lead_activities (lead_id, activity_type, description, performed_by)
        VALUES (?, 'form_submission', 'New lead submitted via website form', 'system')`,
       [leadId]
     );
 
-    // Send email notifications (async, don't wait)
     initEmailService().then(async () => {
       try {
         const leadData = {
@@ -201,7 +208,6 @@ export async function POST(request: NextRequest) {
           message: validatedData.message,
         };
 
-        // Get program title if program selected
         if (validatedData.programId) {
           const programs = await query('SELECT title FROM programs WHERE id = ?', [validatedData.programId]) as any[];
           if (programs.length > 0) {
@@ -209,7 +215,6 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Send notifications
         await Promise.allSettled([
           sendNewLeadNotification(leadData),
           sendLeadConfirmationEmail(leadData),
@@ -219,7 +224,6 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Log the lead creation (with masked sensitive data)
     console.log('New lead created:', maskSensitiveData({
       id: leadId,
       email: validatedData.email,
@@ -239,17 +243,275 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Validation failed',
-          details: error.issues,
-        },
+        { success: false, error: 'Validation failed', details: error.issues },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
       { success: false, error: 'Failed to submit inquiry. Please try again.' },
+      { status: 500 }
+    );
+  }
+}
+
+// CSV bulk upload
+interface CSVRow {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  education_level?: string;
+  current_city?: string;
+  state?: string;
+  status?: string;
+  notes?: string;
+}
+
+function parseCSV(csvText: string): { rows: CSVRow[]; errors: string[] } {
+  const lines = csvText.trim().split('\n');
+  const errors: string[] = [];
+
+  if (lines.length < 2) {
+    return { rows: [], errors: ['CSV file is empty or has no data rows'] };
+  }
+
+  const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+
+  const requiredCols = ['first_name', 'last_name', 'email'];
+  for (const col of requiredCols) {
+    if (!header.includes(col)) {
+      errors.push(`Missing required column: ${col}`);
+    }
+  }
+  if (errors.length > 0) return { rows: [], errors };
+
+  const rows: CSVRow[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    const values: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    for (const ch of line) {
+      if (ch === '"') {
+        inQuotes = !inQuotes;
+      } else if (ch === ',' && !inQuotes) {
+        values.push(current.trim());
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    values.push(current.trim());
+
+    const row: any = {};
+    header.forEach((col, idx) => {
+      row[col] = values[idx] || '';
+    });
+
+    if (row.first_name && row.last_name && row.email) {
+      rows.push({
+        first_name: row.first_name,
+        last_name: row.last_name,
+        email: row.email,
+        phone: row.phone || undefined,
+        education_level: row.education_level || undefined,
+        current_city: row.current_city || undefined,
+        state: row.state || undefined,
+        status: row.status || undefined,
+        notes: row.notes || undefined,
+      });
+    } else {
+      errors.push(`Row ${i + 1}: missing required fields (first_name, last_name, email)`);
+    }
+  }
+
+  return { rows, errors };
+}
+
+async function handleBulkUpload(request: NextRequest) {
+  try {
+    const authCheck = requireAdmin(request);
+    if ('error' in authCheck) {
+      return NextResponse.json({ success: false, error: authCheck.error }, { status: authCheck.status });
+    }
+
+    const formData = await request.formData();
+    const file = formData.get('file') as File | null;
+
+    if (!file) {
+      return NextResponse.json(
+        { success: false, error: 'No CSV file provided' },
+        { status: 400 }
+      );
+    }
+
+    if (!file.name.endsWith('.csv')) {
+      return NextResponse.json(
+        { success: false, error: 'Only CSV files are accepted' },
+        { status: 400 }
+      );
+    }
+
+    const csvText = await file.text();
+    const { rows, errors: parseErrors } = parseCSV(csvText);
+
+    if (parseErrors.length > 0) {
+      return NextResponse.json({
+        success: false,
+        error: 'CSV parsing errors',
+        details: parseErrors,
+      }, { status: 400 });
+    }
+
+    if (rows.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'No valid rows found in CSV' },
+        { status: 400 }
+      );
+    }
+
+    if (rows.length > 500) {
+      return NextResponse.json(
+        { success: false, error: 'Maximum 500 rows per upload. Please split your file.' },
+        { status: 400 }
+      );
+    }
+
+    let inserted = 0;
+    let duplicates = 0;
+    let failed = 0;
+    const failedRows: string[] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      try {
+        const existing = await query('SELECT id FROM leads WHERE email = ?', [row.email.toLowerCase().trim()]) as any[];
+        if (existing.length > 0) {
+          duplicates++;
+          continue;
+        }
+
+        const validStatuses = ['new', 'contacted', 'qualified', 'converted', 'lost'];
+        const status = validStatuses.includes(row.status || '') ? row.status : 'new';
+
+        await query(
+          `INSERT INTO leads (
+            first_name, last_name, email, phone,
+            education_level, current_city, state,
+            status, source, notes, consent_email, consent_phone
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            row.first_name.trim(),
+            row.last_name.trim(),
+            row.email.toLowerCase().trim(),
+            row.phone || null,
+            row.education_level || null,
+            row.current_city || null,
+            row.state || null,
+            status,
+            'bulk_upload',
+            row.notes || null,
+            true,
+            true,
+          ]
+        );
+        inserted++;
+      } catch (err) {
+        failed++;
+        failedRows.push(`Row ${i + 2}: ${row.email} — ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        total: rows.length,
+        inserted,
+        duplicates,
+        failed,
+        failedRows: failedRows.length > 0 ? failedRows.slice(0, 20) : undefined,
+      },
+      message: `Uploaded ${inserted} leads (${duplicates} duplicates skipped, ${failed} failed)`,
+    });
+  } catch (error) {
+    console.error('Error bulk uploading leads:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to process bulk upload' },
+      { status: 500 }
+    );
+  }
+}
+
+// Manual lead creation
+async function handleManualLead(request: NextRequest) {
+  try {
+    const authCheck = requireAdmin(request);
+    if ('error' in authCheck) {
+      return NextResponse.json({ success: false, error: authCheck.error }, { status: authCheck.status });
+    }
+
+    const body = await request.json();
+    const {
+      first_name, last_name, email, phone,
+      education_level, program_category_id, program_of_interest_id,
+      current_city, state, status, assigned_to_id, notes
+    } = body;
+
+    if (!first_name || !last_name || !email) {
+      return NextResponse.json(
+        { success: false, error: 'First name, last name and email are required' },
+        { status: 400 }
+      );
+    }
+
+    const existing = await query('SELECT id FROM leads WHERE email = ?', [email.toLowerCase().trim()]) as any[];
+    if (existing.length > 0) {
+      return NextResponse.json(
+        { success: false, error: 'A lead with this email already exists' },
+        { status: 409 }
+      );
+    }
+
+    const result = await query(
+      `INSERT INTO leads (
+        first_name, last_name, email, phone,
+        education_level, program_category_id, program_of_interest_id,
+        current_city, state, status, assigned_to_id, assigned_at,
+        source, notes, consent_email, consent_phone
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        first_name.trim(),
+        last_name.trim(),
+        email.toLowerCase().trim(),
+        phone || null,
+        education_level || null,
+        program_category_id || null,
+        program_of_interest_id || null,
+        current_city || null,
+        state || null,
+        status || 'new',
+        assigned_to_id || null,
+        assigned_to_id ? new Date().toISOString().slice(0, 19).replace('T', ' ') : null,
+        'manual',
+        notes || null,
+        true,
+        true,
+      ]
+    ) as any;
+
+    return NextResponse.json({
+      success: true,
+      data: { id: result.insertId },
+      message: `Lead ${first_name} ${last_name} added successfully`,
+    });
+  } catch (error) {
+    console.error('Error adding manual lead:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to add lead' },
       { status: 500 }
     );
   }

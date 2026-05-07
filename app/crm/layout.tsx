@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
 
-      const response = await fetch('/api/auth/me', {
+      const response = await fetch('/api/auth?action=me', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch('/api/auth?action=logout', { method: 'POST' });
     } finally {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
