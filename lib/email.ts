@@ -128,7 +128,7 @@ export async function sendNewLeadNotification(leadData: LeadData): Promise<boole
           </a>
         </div>
         <div class="footer">
-          <p>This email was sent automatically by the Sample Nav Business lead generation system.</p>
+          <p>This email was sent automatically by the Dreamkripa lead generation system.</p>
           <p>Please respond to the lead within 24 hours for best conversion results.</p>
         </div>
       </div>
@@ -160,7 +160,7 @@ export async function sendLeadConfirmationEmail(leadData: LeadData): Promise<boo
     <body>
       <div class="container">
         <div class="header">
-          <h1>🎓 Welcome to Sample Nav Business!</h1>
+          <h1>🎓 Welcome to Dreamkripa!</h1>
         </div>
         <div class="content">
           <p>Dear <strong>${leadData.first_name} ${leadData.last_name}</strong>,</p>
@@ -184,10 +184,10 @@ export async function sendLeadConfirmationEmail(leadData: LeadData): Promise<boo
           <p>We're excited to help you achieve your academic dreams!</p>
 
           <p>Best regards,<br>
-          <strong>The Sample Nav Business Team</strong></p>
+          <strong>The Dreamkripa Team</strong></p>
         </div>
         <div class="footer">
-          <p>© ${new Date().getFullYear()} Sample Nav Business. All rights reserved.</p>
+          <p>© ${new Date().getFullYear()} Dreamkripa. All rights reserved.</p>
           <p>This is an automated email. Please do not reply directly to this message.</p>
         </div>
       </div>
