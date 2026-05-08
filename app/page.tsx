@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, GraduationCap, Users, Trophy, BookOpen, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, CheckCircle2, GraduationCap, Users, Trophy, BookOpen, Sparkles, Quote, ChevronDown } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -33,6 +36,57 @@ const benefits = [
   },
 ];
 
+const testimonials = [
+  {
+    name: 'Priya S.',
+    college: 'VIT Vellore',
+    program: 'B.Tech CSE',
+    initials: 'PS',
+    quote: 'Dreamkripa handled everything from application to admission. I got into my dream college stress-free.',
+    color: 'bg-blue-600',
+  },
+  {
+    name: 'Rahul M.',
+    college: 'Amity University',
+    program: 'MBA',
+    initials: 'RM',
+    quote: 'The counselors knew exactly which colleges matched my profile. Highly recommend!',
+    color: 'bg-indigo-600',
+  },
+  {
+    name: 'Anjali K.',
+    college: 'Manipal University',
+    program: 'MBBS',
+    initials: 'AK',
+    quote: 'Got MBBS admission with scholarship help from Dreamkripa. Life-changing guidance.',
+    color: 'bg-purple-600',
+  },
+  {
+    name: 'Arjun T.',
+    college: 'SRM Institute',
+    program: 'B.Tech ECE',
+    initials: 'AT',
+    quote: 'Applied to 5 colleges, got into 3. Dreamkripa made the process so simple.',
+    color: 'bg-blue-700',
+  },
+  {
+    name: 'Sneha R.',
+    college: 'Symbiosis',
+    program: 'BCA',
+    initials: 'SR',
+    quote: 'Fast response, genuine advice, zero fees. Exactly what a student needs.',
+    color: 'bg-indigo-700',
+  },
+  {
+    name: 'Karan D.',
+    college: 'Christ University',
+    program: 'MBA',
+    initials: 'KD',
+    quote: 'They helped me compare programs and pick the right MBA specialization for my goals.',
+    color: 'bg-purple-700',
+  },
+];
+
 const featuredPrograms = [
   {
     title: 'B.Tech Computer Science',
@@ -63,6 +117,54 @@ const featuredPrograms = [
     slug: 'bca',
   },
 ];
+
+const faqs = [
+  {
+    question: 'Is Dreamkripa\'s counseling really free?',
+    answer: 'Yes, 100%. We charge absolutely no registration or counseling fees. Our goal is to make quality education guidance accessible to every student.',
+  },
+  {
+    question: 'Which universities do you work with?',
+    answer: 'We are partnered with 200+ top universities across India including VIT, Amity, Manipal, SRM, Symbiosis, Christ University, and many more.',
+  },
+  {
+    question: 'How long does the admission process take?',
+    answer: 'It depends on the program and university, but most admissions are completed within 2–4 weeks with our guidance.',
+  },
+  {
+    question: 'Do you help with scholarship applications?',
+    answer: 'Yes! We help students identify and apply for scholarships and financial aid options at our partner universities.',
+  },
+  {
+    question: 'What documents do I need to apply?',
+    answer: 'Typically you\'ll need your 10th and 12th mark sheets, ID proof, passport-size photos, and entrance exam scores (if applicable). Our counselors will give you a full checklist.',
+  },
+  {
+    question: 'Can students from any state in India apply?',
+    answer: 'Absolutely. We guide students from all states across India.',
+  },
+  {
+    question: 'What is the minimum eligibility for B.Tech?',
+    answer: 'Generally, 10+2 with Physics, Chemistry, and Mathematics with at least 45–50% marks. Eligibility varies by university, our counselors will assess your profile.',
+  },
+  {
+    question: 'How do I get started?',
+    answer: 'Simply click "Apply Now" on our website. It\'s free, takes 2 minutes, and a counselor will reach out within 24 hours.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': faqs.map((faq) => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': faq.answer,
+    },
+  })),
+};
 
 export default function HomePage() {
   return (
@@ -174,6 +276,48 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Student Success Stories */}
+        <section className="py-20 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                What Our Students Say
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                50,000+ students guided. Here are a few of their stories.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {testimonials.map((student) => (
+                <div
+                  key={student.name}
+                  className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow relative"
+                >
+                  <Quote className="absolute top-4 right-4 h-8 w-8 text-yellow-400/30" />
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className={`flex-shrink-0 w-14 h-14 ${student.color} rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md`}>
+                      {student.initials}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{student.name}</h3>
+                      <p className="text-sm text-blue-600 font-medium">{student.program}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                    &ldquo;{student.quote}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    <span>{student.college}</span>
+                  </div>
+                  <div className="mt-3 h-1 w-10 bg-yellow-400 rounded-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Featured Programs */}
         <section className="py-20 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -240,7 +384,60 @@ export default function HomePage() {
         </section>
       </main>
 
+      {/* FAQ Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Got questions? We&apos;ve got answers. Here are the things students ask us most.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, index) => (
+              <FAQItem key={index} question={faq.question} answer={faq.answer} />
+            ))}
+          </div>
+        </div>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqSchema),
+          }}
+        />
+      </section>
+
       <Footer />
+    </div>
+  );
+}
+
+function FAQItem({ question, answer }: { question: string; answer: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-6 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        aria-expanded={isOpen}
+      >
+        <span className="font-semibold text-gray-900 pr-4">{question}</span>
+        <ChevronDown
+          className={`flex-shrink-0 h-5 w-5 text-blue-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
+          {answer}
+        </div>
+      </div>
     </div>
   );
 }

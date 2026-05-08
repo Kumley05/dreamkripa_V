@@ -3,10 +3,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { Phone, Mail, MessageSquare, Clock, Headphones, BookOpen, HelpCircle, ChevronRight } from 'lucide-react';
 
-export const metadata = {
-  title: 'Student Support',
-  description: 'Get help with your college admissions, application status, program queries, and more. Dreamkripa student support is available Mon-Sat.',
-};
+// Metadata moved to app/support/layout.tsx
 
 const supportChannels = [
   { icon: Phone, title: 'Call Us', desc: 'Speak directly with a counselor', value: '+91 96065 80847', action: 'tel:+919606580847', color: 'bg-green-100 text-green-600' },

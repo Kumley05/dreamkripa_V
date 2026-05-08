@@ -206,14 +206,14 @@ function ApplyPageContent() {
       const data = await response.json();
 
       if (data.success) {
-        setSubmitSuccess(true);
-        // Track conversion
+        // Fire GA4 conversion event, then redirect
         if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'generate_lead', {
-            event_category: 'lead_generation',
-            event_label: 'application_form',
+          (window as any).gtag('event', 'apply_now_click', {
+            event_category: 'conversion',
+            event_label: 'Apply Now Button',
           });
         }
+        router.push('/thank-you');
       } else {
         setErrors({ submit: data.error || 'Failed to submit application. Please try again.' });
       }

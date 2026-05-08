@@ -2,10 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { FileText } from 'lucide-react';
 
-export const metadata = {
-  title: 'Terms of Service',
-  description: 'Read the terms and conditions for using Dreamkripa website and services. By using our site, you agree to these terms.',
-};
+// Metadata moved to app/terms/layout.tsx
 
 export default function TermsPage() {
   return (

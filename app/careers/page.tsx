@@ -2,10 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Briefcase, MapPin, Clock, ArrowRight, CheckCircle2, Users, TrendingUp, Heart } from 'lucide-react';
 
-export const metadata = {
-  title: 'Careers at Dreamkripa',
-  description: 'Join the Dreamkripa team and help shape the future of higher education in India. Explore open positions and grow your career with us.',
-};
+// Metadata moved to app/careers/layout.tsx
 
 const openings = [
   {

@@ -2,10 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Shield } from 'lucide-react';
 
-export const metadata = {
-  title: 'Privacy Policy',
-  description: 'Learn how Dreamkripa collects, uses, and protects your personal information. Your privacy matters to us.',
-};
+// Metadata moved to app/privacy/layout.tsx
 
 export default function PrivacyPage() {
   return (

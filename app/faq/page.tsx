@@ -3,10 +3,7 @@ import Footer from '@/components/Footer';
 import { ChevronDown, ChevronUp, GraduationCap, HelpCircle } from 'lucide-react';
 import { FAQItem } from './FAQItem';
 
-export const metadata = {
-  title: 'Frequently Asked Questions',
-  description: 'Find answers to common questions about Dreamkripa programs, admissions, fees, scholarships, and the application process.',
-};
+// Metadata moved to app/faq/layout.tsx
 
 const faqCategories = [
   {
@@ -95,6 +92,21 @@ const faqCategories = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': faqCategories.flatMap((section) =>
+    section.questions.map((faq) => ({
+      '@type': 'Question',
+      'name': faq.q,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.a,
+      },
+    }))
+  ),
+};
+
 export default function FAQPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -145,6 +157,13 @@ export default function FAQPage() {
           </a>
         </div>
       </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema),
+        }}
+      />
 
       <Footer />
     </div>

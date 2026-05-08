@@ -20,8 +20,8 @@ export const metadata: Metadata = {
     default: "Dreamkripa - Your Gateway to Elite Colleges",
     template: "%s | Dreamkripa"
   },
-  description: "Discover your dream higher education program in India. Explore undergraduate, postgraduate, and professional courses across Engineering, Business, Medical, Arts, and more. Get personalized guidance for your academic journey.",
-  keywords: ["higher education India", "admission guidance", "career counseling", "university programs", "professional courses", "B.Tech", "MBA", "MBBS", "education consultant India", "Dreamkripa"],
+  description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Apply now, it's free.",
+  keywords: ["higher education India", "admission guidance", "career counseling", "university programs", "professional courses", "B.Tech", "MBA", "MBBS", "education consultant India", "Dreamkripa", "IIBS Bangalore", "IIBS admission", "International Institute of Business Studies", "MBA admission Bangalore", "BBA admission India", "college admission guidance"],
   authors: [{ name: "Dreamkripa" }],
   creator: "Dreamkripa",
   publisher: "Dreamkripa",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     locale: "en_IN",
     siteName: "Dreamkripa",
     title: "Dreamkripa - Your Gateway to Elite Colleges",
-    description: "Discover your dream higher education program in India. Get personalized guidance for your academic journey.",
+    description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Apply now, it's free.",
     images: [
       {
         url: "/og-image.jpg",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Dreamkripa - Your Gateway to Elite Colleges",
-    description: "Discover your dream higher education program in India. Get personalized guidance for your academic journey.",
+    description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Apply now, it's free.",
     images: ["/og-image.jpg"],
   },
   icons: {
@@ -61,13 +61,31 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
+import Script from "next/script";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const GA_MEASUREMENT_ID = "G-Q8PQHH99ME";
+
   return (
     <html lang="en-IN" suppressHydrationWarning>
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
+      </head>
       <body className={`${inter.className} antialiased`}>
         {children}
         <script
@@ -79,14 +97,54 @@ export default function RootLayout({
               "name": "Dreamkripa",
               "description": "Your Gateway to Elite Colleges. Leading education consultancy helping students find their dream higher education programs in India",
               "url": "https://dreamkripa.com",
+              "logo": "https://dreamkripa.com/logo.png",
+              "image": "https://dreamkripa.com/og-image.jpg",
+              "telephone": "+91-96065-80847",
+              "email": "admissions@dreamkripa.com",
+              "foundingDate": "2010",
+              "numberOfEmployees": {
+                "@type": "QuantitativeValue",
+                "minValue": 50,
+                "maxValue": 200
+              },
               "address": {
                 "@type": "PostalAddress",
-                "addressCountry": "IN"
+                "addressCountry": "IN",
+                "addressLocality": "Bangalore",
+                "addressRegion": "Karnataka"
               },
               "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "admissions",
-                "availableLanguage": "English"
+                "telephone": "+91-96065-80847",
+                "email": "admissions@dreamkripa.com",
+                "availableLanguage": ["English", "Hindi"],
+                "areaServed": {
+                  "@type": "Country",
+                  "name": "India"
+                }
+              },
+              "sameAs": [
+                "https://www.facebook.com/dreamkripa",
+                "https://twitter.com/dreamkripa",
+                "https://www.linkedin.com/company/dreamkripa",
+                "https://www.youtube.com/@dreamkripa"
+              ]
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Dreamkripa",
+              "url": "https://dreamkripa.com",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://dreamkripa.com/programs?q={search_term_string}",
+                "query-input": "required name=search_term_string"
               }
             })
           }}

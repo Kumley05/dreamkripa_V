@@ -7,11 +7,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'About Dreamkripa | 15+ Years of Excellence',
     description: 'Trusted by 50,000+ students across India. Expert education counseling with a 95% success rate in university admissions.',
-    url: 'https://ds521u300p80.drytis.ai/about',
+    url: 'https://dreamkripa.com/about',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://ds521u300p80.drytis.ai/about',
+    canonical: 'https://dreamkripa.com/about',
   },
 };
 

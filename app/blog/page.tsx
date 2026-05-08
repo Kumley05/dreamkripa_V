@@ -3,12 +3,19 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { ArrowRight, Calendar, User, Tag } from 'lucide-react';
 
-export const metadata = {
-  title: 'Blog — Dreamkripa',
-  description: 'Read the latest articles on higher education, career guidance, college admissions, entrance exams, and student success stories from Dreamkripa.',
-};
+// Metadata moved to app/blog/layout.tsx
 
 const posts = [
+  {
+    slug: 'iibs-bangalore-admission-2025',
+    title: 'IIBS Bangalore Admission 2025: Courses, Fees, Placements & How to Apply',
+    excerpt: 'Complete guide to International Institute of Business Studies (IIBS) Bangalore — MBA, BBA, BCA, B.Com courses, fee structure, placement records, ranking, and step-by-step admission process.',
+    author: 'Dreamkripa Team',
+    date: '2025-05-08',
+    category: 'Admissions',
+    readTime: '10 min read',
+    image: '🏫',
+  },
   {
     slug: 'top-engineering-colleges-india-2025',
     title: 'Top 25 Engineering Colleges in India for 2025 Admissions',
