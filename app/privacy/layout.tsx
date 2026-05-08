@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Learn how Dreamkripa collects, uses, and protects your personal information. Your privacy matters to us.',
   alternates: {
-    canonical: 'https://dreamkripa.com/privacy',
+    canonical: 'https://www.dreamkripa.com/privacy',
   },
 };
 

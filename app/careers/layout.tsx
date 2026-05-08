@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: 'Explore open positions at Dreamkripa. Grow your career in education consulting.',
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/careers',
+    canonical: 'https://www.dreamkripa.com/careers',
   },
 };
 

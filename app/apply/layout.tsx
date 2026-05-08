@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Start your free application with Dreamkripa today. Expert counselors will guide you to the right college and program. No registration fees, fast response.",
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/apply',
+    canonical: 'https://www.dreamkripa.com/apply',
   },
 };
 

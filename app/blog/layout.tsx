@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: 'Expert articles on higher education, career guidance, college admissions, and entrance exams in India.',
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/blog',
+    canonical: 'https://www.dreamkripa.com/blog',
   },
 };
 

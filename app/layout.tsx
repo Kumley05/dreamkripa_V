@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dreamkripa.com"),
+  metadataBase: new URL("https://www.dreamkripa.com"),
   title: {
     default: "Dreamkripa - Your Gateway to Elite Colleges",
     template: "%s | Dreamkripa"
@@ -96,9 +96,9 @@ export default function RootLayout({
               "@type": "EducationalOrganization",
               "name": "Dreamkripa",
               "description": "Your Gateway to Elite Colleges. Leading education consultancy helping students find their dream higher education programs in India",
-              "url": "https://dreamkripa.com",
-              "logo": "https://dreamkripa.com/logo.png",
-              "image": "https://dreamkripa.com/og-image.jpg",
+              "url": "https://www.dreamkripa.com",
+              "logo": "https://www.dreamkripa.com/logo.png",
+              "image": "https://www.dreamkripa.com/og-image.jpg",
               "telephone": "+91-96065-80847",
               "email": "admissions@dreamkripa.com",
               "foundingDate": "2010",
@@ -140,10 +140,10 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "Dreamkripa",
-              "url": "https://dreamkripa.com",
+              "url": "https://www.dreamkripa.com",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://dreamkripa.com/programs?q={search_term_string}",
+                "target": "https://www.dreamkripa.com/programs?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             })

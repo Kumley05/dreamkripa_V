@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: 'Get help with your college admissions, application status, program queries, and more.',
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/support',
+    canonical: 'https://www.dreamkripa.com/support',
   },
 };
 

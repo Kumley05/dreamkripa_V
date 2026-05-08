@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /crm/
 Disallow: /thank-you
 
-Sitemap: https://dreamkripa.com/sitemap.xml
+Sitemap: https://www.dreamkripa.com/sitemap.xml

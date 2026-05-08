@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: 'Get in touch with our expert counselors for free guidance on admissions, programs, and career planning.',
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/contact',
+    canonical: 'https://www.dreamkripa.com/contact',
   },
 };
 

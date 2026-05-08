@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Explore 500+ undergraduate and postgraduate programs in Engineering, Medical, Business & more. Free admission counseling from Dreamkripa's expert team.",
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/programs',
+    canonical: 'https://www.dreamkripa.com/programs',
   },
 };
 

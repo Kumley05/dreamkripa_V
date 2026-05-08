@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: 'Get direct admission to IIBS Bangalore — NAAC A-Grade, AICTE approved. Explore courses, fees, placements & ranking. Free counseling from Dreamkripa.',
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/colleges/iibs-bangalore',
+    canonical: 'https://www.dreamkripa.com/colleges/iibs-bangalore',
   },
 };
 
@@ -86,7 +86,7 @@ const iibsSchema = {
   'name': 'International Institute of Business Studies (IIBS Bangalore)',
   'alternateName': ['IIBS', 'IIBS Bangalore', 'IIBS Bengaluru', 'International Institute of Business Studies'],
   'description': 'IIBS Bangalore is a NAAC A-Grade, AICTE approved business school affiliated with Bengaluru City University, offering MBA, BBA, BCA, B.Com, and BA programs.',
-  'url': 'https://dreamkripa.com/colleges/iibs-bangalore',
+  'url': 'https://www.dreamkripa.com/colleges/iibs-bangalore',
   'address': {
     '@type': 'PostalAddress',
     'addressLocality': 'Bangalore',

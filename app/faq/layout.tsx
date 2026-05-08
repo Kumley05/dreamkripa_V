@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: 'Find answers to common questions about Dreamkripa programs, admissions, fees, scholarships, and the application process.',
   },
   alternates: {
-    canonical: 'https://dreamkripa.com/faq',
+    canonical: 'https://www.dreamkripa.com/faq',
   },
 };
 

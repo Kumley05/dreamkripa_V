@@ -364,6 +364,59 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Featured College - IIBS */}
+        <section className="py-20 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 md:p-12 border border-blue-100">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <span className="inline-block bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+                    Featured College
+                  </span>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                    International Institute of Business Studies (IIBS), Bangalore
+                  </h2>
+                  <p className="text-gray-600 mb-4 leading-relaxed">
+                    NAAC A-Grade, AICTE approved, ranked #66 in India. Offering MBA, BBA, BCA, B.Com & BA programs with 90%+ placements and average package of ₹5.5 LPA.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="bg-white text-blue-700 px-3 py-1 rounded-full text-xs font-medium border">MBA</span>
+                    <span className="bg-white text-blue-700 px-3 py-1 rounded-full text-xs font-medium border">BBA</span>
+                    <span className="bg-white text-blue-700 px-3 py-1 rounded-full text-xs font-medium border">BCA</span>
+                    <span className="bg-white text-blue-700 px-3 py-1 rounded-full text-xs font-medium border">B.Com</span>
+                    <span className="bg-white text-blue-700 px-3 py-1 rounded-full text-xs font-medium border">BA</span>
+                  </div>
+                  <Link
+                    href="/colleges/iibs-bangalore"
+                    className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                  >
+                    View Courses, Fees & Admission Details
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-blue-600">NAAC A</div>
+                    <div className="text-xs text-gray-500">Grade</div>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-green-600">90%+</div>
+                    <div className="text-xs text-gray-500">Placements</div>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-purple-600">#66</div>
+                    <div className="text-xs text-gray-500">India Rank</div>
+                  </div>
+                  <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                    <div className="text-2xl font-bold text-orange-600">₹5.5L</div>
+                    <div className="text-xs text-gray-500">Avg Package</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">

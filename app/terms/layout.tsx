@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'Read the terms and conditions for using Dreamkripa website and services. By using our site, you agree to these terms.',
   alternates: {
-    canonical: 'https://dreamkripa.com/terms',
+    canonical: 'https://www.dreamkripa.com/terms',
   },
 };
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Thank you for your application. A Dreamkripa counselor will contact you within 24 hours.',
   robots: 'noindex, follow',
   alternates: {
-    canonical: 'https://dreamkripa.com/thank-you',
+    canonical: 'https://www.dreamkripa.com/thank-you',
   },
 };
 
