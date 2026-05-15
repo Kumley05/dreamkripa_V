@@ -52,7 +52,7 @@ export async function sendEmail({ to, subject, htmlBody, textBody }: EmailConfig
 }
 
 export async function sendNewLeadNotification(leadData: LeadData): Promise<boolean> {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@Sample.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@dreamkripa.com';
 
   const htmlBody = `
     <!DOCTYPE html>
@@ -177,7 +177,7 @@ export async function sendLeadConfirmationEmail(leadData: LeadData): Promise<boo
 
           <p>If you have any urgent questions, feel free to reach out to us:</p>
           <ul>
-            <li>📧 Email: admissions@Sample.com</li>
+            <li>📧 Email: admissions@dreamkripa.com</li>
             <li>📱 Phone: +91 96065 80847</li>
           </ul>
 

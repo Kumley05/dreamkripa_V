@@ -429,7 +429,7 @@ export default function AboutPage() {
                   </div>
                   <div className="flex items-center space-x-3 text-gray-700">
                     <Mail className="h-5 w-5 text-blue-600" />
-                    <span>counseling@Sample.com</span>
+                    <span>admissions@dreamkripa.com</span>
                   </div>
                   <div className="flex items-center space-x-3 text-gray-700">
                     <MapPin className="h-5 w-5 text-blue-600" />
