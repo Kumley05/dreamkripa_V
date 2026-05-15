@@ -106,10 +106,10 @@ CREATE TABLE IF NOT EXISTS email_logs (
   FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE SET NULL
 );
 
--- Insert default admin user (password: admin123 - change this!)
--- Password is bcrypt hashed
+-- Insert default admin user (password: admin123)
+-- bcrypt hash generated for 'admin123'
 INSERT IGNORE INTO users (name, email, password, role) VALUES
-('Admin', 'admin@dreamkripa.com', '$2a$10$YourBcryptHashHere', 'admin');
+('Admin', 'admin@dreamkripa.com', '$2b$10$4lOftlLBWO7nlyUDDtjOlebOx48dlIxFaY/b6KMDaxOu4pkA3yN8a', 'admin');
 
 -- Insert program categories
 INSERT IGNORE INTO program_categories (id, name, slug, description, icon, display_order) VALUES
