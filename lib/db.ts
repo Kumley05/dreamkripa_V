@@ -4,7 +4,7 @@ let pool: mysql.Pool | null = null;
 
 export function getPool() {
   if (!pool) {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.VERCEL === '1';
 
     pool = mysql.createPool({
       host: process.env.DATABASE_HOST || 'localhost',
