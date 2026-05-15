@@ -6,6 +6,18 @@ export function getPool() {
   if (!pool) {
     const isProduction = process.env.VERCEL === '1';
 
+    // Build SSL config — Aiven requires CA cert in production
+    let sslConfig: any = undefined;
+    if (isProduction) {
+      sslConfig = { rejectUnauthorized: false };
+      if (process.env.DATABASE_SSL_CA) {
+        sslConfig = {
+          ca: process.env.DATABASE_SSL_CA.replace(/\\n/g, '\n'),
+          rejectUnauthorized: true,
+        };
+      }
+    }
+
     pool = mysql.createPool({
       host: process.env.DATABASE_HOST || 'localhost',
       port: parseInt(process.env.DATABASE_PORT || '3306'),
@@ -17,8 +29,7 @@ export function getPool() {
       queueLimit: 0,
       enableKeepAlive: true,
       keepAliveInitialDelay: 0,
-      // Aiven and other cloud providers require SSL
-      ssl: isProduction ? { rejectUnauthorized: false } : undefined,
+      ssl: sslConfig,
     });
   }
   return pool;
