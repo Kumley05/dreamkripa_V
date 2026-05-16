@@ -408,7 +408,7 @@ export default function HomePage() {
                     <div className="text-xs text-gray-500">India Rank</div>
                   </div>
                   <div className="bg-white rounded-xl p-4 text-center shadow-sm">
-                    <div className="text-2xl font-bold text-orange-600">₹5.5L</div>
+                    <div className="text-2xl font-bold text-orange-600">₹13.5L</div>
                     <div className="text-xs text-gray-500">Avg Package</div>
                   </div>
                 </div>
