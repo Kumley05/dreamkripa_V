@@ -262,7 +262,7 @@ function ProgramsPageContent() {
                       href={`/apply?program=${program.slug}`}
                       className="mt-4 w-full inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors"
                     >
-                      Apply Now
+                      Book Seat
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </div>

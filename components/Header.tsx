@@ -57,8 +57,8 @@ export default function Header() {
               href="/apply"
               className="bg-[#A84296] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#8E3780] transition-colors shadow-md hover:shadow-lg"
             >
-              Apply Now
-            </Link>
+Book Slot
+</Link>
           </div>
 
           {/* Mobile menu button */}
@@ -98,7 +98,7 @@ export default function Header() {
               className="block rounded-lg px-3 py-2 text-base font-medium bg-[#A84296] text-white hover:bg-[#8E3780] text-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Apply Now
+              Book Slot
             </Link>
           </div>
         </div>

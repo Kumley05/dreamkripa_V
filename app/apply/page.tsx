@@ -208,14 +208,14 @@ function ApplyPageContent() {
       if (data.success) {
         // Fire GA4 conversion event, then redirect
         if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'apply_now_click', {
+          (window as any).gtag('event', 'get_counselling_click', {
             event_category: 'conversion',
-            event_label: 'Apply Now Button',
+            event_label: 'Get Counselling Button',
           });
         }
         router.push('/thank-you');
       } else {
-        setErrors({ submit: data.error || 'Failed to submit application. Please try again.' });
+        setErrors({ submit: data.error || 'Failed to submit. Please try again.' });
       }
     } catch (error) {
       setErrors({ submit: 'Network error. Please try again.' });
@@ -234,7 +234,7 @@ function ApplyPageContent() {
               <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
                 <CheckCircle2 className="h-10 w-10 text-green-600" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Application Submitted!</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Counselling Request Submitted!</h1>
               <p className="text-lg text-gray-600 mb-8">
                 Thank you for your interest! Our expert counselor will contact you within 24 hours
                 to guide you through the admission process.
@@ -310,10 +310,10 @@ function ApplyPageContent() {
           {/* Form Card */}
           <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Start Your Application
+              Get Free Counselling
             </h1>
             <p className="text-gray-600 mb-6">
-              Fill in your details and our counselors will help you find the perfect program.
+              Fill in your details and our counselors will help you find the perfect program and book your seat.
             </p>
 
             <form onSubmit={handleSubmit}>
@@ -629,7 +629,7 @@ function ApplyPageContent() {
                     disabled={isSubmitting}
                     className="flex items-center px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                    {isSubmitting ? 'Submitting...' : 'Get Free Counselling'}
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </button>
                 )}

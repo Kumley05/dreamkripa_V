@@ -44,7 +44,7 @@ export default function NotFound() {
               href="/apply"
               className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700"
             >
-              Apply Now — It&apos;s Free
+              Get Free Counselling
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </div>

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     default: "Dreamkripa - Your Gateway to Elite Colleges",
     template: "%s | Dreamkripa"
   },
-  description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Apply now, it's free.",
+  description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Get free counselling, it's free.",
   keywords: ["higher education India", "admission guidance", "career counseling", "university programs", "professional courses", "B.Tech", "MBA", "MBBS", "education consultant India", "Dreamkripa", "IIBS Bangalore", "IIBS admission", "International Institute of Business Studies", "MBA admission Bangalore", "BBA admission India", "college admission guidance"],
   authors: [{ name: "Dreamkripa" }],
   creator: "Dreamkripa",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     locale: "en_IN",
     siteName: "Dreamkripa",
     title: "Dreamkripa - Your Gateway to Elite Colleges",
-    description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Apply now, it's free.",
+    description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Get free counselling, it's free.",
     images: [
       {
         url: "/og-image.jpg",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Dreamkripa - Your Gateway to Elite Colleges",
-    description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Apply now, it's free.",
+    description: "Get free expert guidance for B.Tech, MBA, MBBS & 500+ programs from India's top universities. 50,000+ students guided since 2010. Get free counselling, it's free.",
     images: ["/og-image.jpg"],
   },
   icons: {

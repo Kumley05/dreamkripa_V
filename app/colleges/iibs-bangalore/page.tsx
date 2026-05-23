@@ -218,7 +218,7 @@ export default function IIBSPage() {
                 href="/apply"
                 className="inline-flex items-center justify-center bg-yellow-400 text-blue-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition-colors"
               >
-                Apply Now — Free Counseling
+                Get Free Counselling
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Link>
               <a
@@ -351,7 +351,7 @@ export default function IIBSPage() {
                       href="/apply"
                       className="inline-flex items-center bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-700 transition-colors"
                     >
-                      Apply for This Course
+                      Book Seat
                       <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
                   </div>
@@ -483,7 +483,7 @@ export default function IIBSPage() {
               href="/apply"
               className="inline-flex items-center justify-center bg-yellow-400 text-blue-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition-colors"
             >
-              Apply Now — It&apos;s Free
+              Get Free Counselling
               <ArrowRight className="h-5 w-5 ml-2" />
             </Link>
             <a

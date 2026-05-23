@@ -463,7 +463,7 @@ export default function AboutPage() {
                 href="/apply"
                 className="inline-flex items-center justify-center bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold hover:bg-yellow-300 transition-all shadow-lg"
               >
-                Apply Now - Free
+                Get Free Counselling
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a

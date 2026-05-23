@@ -149,7 +149,7 @@ const faqs = [
   },
   {
     question: 'How do I get started?',
-    answer: 'Simply click "Apply Now" on our website. It\'s free, takes 2 minutes, and a counselor will reach out within 24 hours.',
+    answer: 'Simply click "Get Counselling" on our website. It\'s free, takes 2 minutes, and a counselor will reach out within 24 hours.',
   },
 ];
 
@@ -203,7 +203,7 @@ export default function HomePage() {
                   href="/apply"
                   className="w-full sm:w-auto bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                  Apply Now - It's Free
+                  Get Free Counselling
                   <ArrowRight className="inline ml-2 h-5 w-5" />
                 </Link>
                 <Link
@@ -346,7 +346,7 @@ export default function HomePage() {
                     href={`/apply?program=${program.slug}`}
                     className="text-blue-600 font-medium hover:text-blue-700 flex items-center"
                   >
-                    Apply Now <ArrowRight className="ml-1 h-4 w-4" />
+                    Book Seat <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </div>
               ))}

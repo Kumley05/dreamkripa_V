@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Apply Now - Free Application for College Admission',
+  title: 'Get Free Counselling - Book Your Seat for College Admission',
   description:
-    "Start your free application with Dreamkripa today. Expert counselors will guide you to the right college and program. No registration fees, fast response.",
+    "Book your seat or get free counselling with Dreamkripa today. Expert counselors will guide you to the right college and program. No registration fees, fast response.",
   openGraph: {
-    title: 'Apply Now | Dreamkripa - Free College Application',
+    title: 'Get Free Counselling | Dreamkripa - Book Your Seat',
     description:
-      "Start your free application with Dreamkripa today. Expert counselors will guide you to the right college and program. No registration fees, fast response.",
+      "Book your seat or get free counselling with Dreamkripa today. Expert counselors will guide you to the right college and program. No registration fees, fast response.",
   },
   alternates: {
     canonical: 'https://www.dreamkripa.com/apply',
