@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ChevronRight, ChevronLeft, CheckCircle2, User, GraduationCap, MapPin, Phone, Mail, MapPin as LocationIcon } from 'lucide-react';
 import { Program, ProgramCategory } from '@/types';
+import { programs as staticPrograms, categories as staticCategories } from '@/lib/program-data';
 
 interface FormData {
   firstName: string;
@@ -94,9 +95,16 @@ function ContactPageContent() {
     try {
       const response = await fetch('/api/categories?active=true');
       const data = await response.json();
-      if (data.success) setCategories(data.data);
+      if (data.success && data.data && data.data.length > 0) {
+        setCategories(data.data);
+      } else {
+        // Fallback to static data if API returns empty or failed
+        setCategories(staticCategories as unknown as ProgramCategory[]);
+      }
     } catch (error) {
       console.error('Error fetching categories:', error);
+      // Fallback to static data on network error
+      setCategories(staticCategories as unknown as ProgramCategory[]);
     }
   };
 
@@ -104,9 +112,30 @@ function ContactPageContent() {
     try {
       const response = await fetch('/api/programs');
       const data = await response.json();
-      if (data.success) setPrograms(data.data);
+      if (data.success && data.data && data.data.length > 0) {
+        setPrograms(data.data);
+      } else {
+        // Fallback to static data if API returns empty or failed
+        const mapped = staticPrograms.map(p => ({
+          ...p,
+          category_id: staticCategories.find(c => c.slug === p.category_slug)?.id || p.id,
+          is_active: true,
+          created_at: '',
+          updated_at: '',
+        }));
+        setPrograms(mapped as unknown as Program[]);
+      }
     } catch (error) {
       console.error('Error fetching programs:', error);
+      // Fallback to static data on network error
+      const mapped = staticPrograms.map(p => ({
+        ...p,
+        category_id: staticCategories.find(c => c.slug === p.category_slug)?.id || p.id,
+        is_active: true,
+        created_at: '',
+        updated_at: '',
+      }));
+      setPrograms(mapped as unknown as Program[]);
     }
   };
 
